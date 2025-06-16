@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mode Guru - Tambah Kosakata</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mode Guru: Tambah Kosakata</h1>
+  <form id="formTambah" onsubmit="simpanKosakata(event)">
+    <label for="kategori">Kategori:</label>
+    <select id="kategori" required>
+      <option value="emosi">Emosi</option>
+      <option value="kebutuhan">Kebutuhan Harian</option>
+      <option value="makanan">Makanan & Minuman</option>
+      <option value="salam">Salam</option>
+      <option value="tempat">Tempat</option>
+    </select>
+
+    <label for="teks">Teks/Kalimat:</label>
+    <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
+
+    <label for="gambar">Gambar (URL atau nama file):</label>
+    <input type="text" id="gambar" placeholder="Contoh: senang.png" required />
+
+    <button type="submit">Simpan Kosakata</button>
+  </form>
+
+  <script>
+    function simpanKosakata(e) {
+      e.preventDefault();
+      const kategori = document.getElementById('kategori').value;
+      const teks = document.getElementById('teks').value;
+      const gambar = document.getElementById('gambar').value;
+
+      const dataBaru = { teks, gambar };
+      const key = "kosakata_" + kategori;
+
+      let dataLama = localStorage.getItem(key);
+      let arr = dataLama ? JSON.parse(dataLama) : [];
+
+      arr.push(dataBaru);
+      localStorage.setItem(key, JSON.stringify(arr));
+
+      alert("Kosakata baru berhasil disimpan!");
+      document.getElementById('formTambah').reset();
+    }
+  </script>
+</body>
+</html>
