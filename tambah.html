@@ -62,7 +62,10 @@
     <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
 
     <label for="gambar">Gambar (URL atau nama file):</label>
-    <input type="text" id="gambar" placeholder="Contoh: senang.png" required />
+    <label for="uploadGambar">Upload Gambar:</label>
+    <input type="file" id="uploadGambar" accept="image/*">
+    <br>
+    <img id="previewGambar" style="max-width: 200px; margin-top: 10px;" />
 
     <button type="submit">Simpan Kosakata</button>
   </form>
