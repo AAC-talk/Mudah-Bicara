@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kategori Kebutuhan Harian</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      margin: 0; padding: 20px; text-align: center;
+    }
+    h1 { color: #2c3e50; }
+    .voice-select {
+      margin: 10px auto; max-width: 400px; text-align: center;
+    }
+    .voice-select select {
+      padding: 8px; font-size: 1em; border-radius: 6px; border: 1px solid #ccc;
+    }
+    .container {
+      display: grid; grid-template-columns: repeat(2,1fr);
+      gap: 20px; max-width: 600px; margin: 30px auto;
+    }
+    .item {
+      background:#fff; border:2px solid #ddd; border-radius:12px;
+      padding:20px; box-shadow:2px 2px 6px #ccc; cursor:pointer;
+    }
+    .item:hover { background:#e0f7fa; }
+    .emoji { font-size:3.5em; line-height:1; }
+    .item p { margin:8px 0 0; font-size:1.1em; color:#333; }
+  </style>
+</head>
+<body>
+
+  <h1>Kebutuhan Harian</h1>
+  <div class="voice-select">
+    <label for="voiceSelect">Pilih Suara:</label>
+    <select id="voiceSelect"></select>
+  </div>
+  <div class="container" id="gridKebutuhan"></div>
+
+  <script>
+    // load voices
+    let voices = [], vs = document.getElementById('voiceSelect');
+    function loadVoices() {
+      voices = speechSynthesis.getVoices();
+      vs.innerHTML = '';
+      voices.forEach((v,i)=> {
+        if (v.lang.startsWith('id')) {
+          let o = new Option(`${v.name} (${v.lang})`, i);
+          vs.add(o);
+        }
+      });
+    }
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    function speak(t){
+      let msg = new SpeechSynthesisUtterance(t);
+      msg.lang = 'id-ID';
+      let sel = voices[vs.value];
+      if (sel) msg.voice = sel;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(msg);
+    }
+
+    // ambil data
+    let arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan')||'[]');
+    // mapping teks→emoji
+    const mapE = {
+      "Saya mau makan":"🍚",
+      "Saya mau minum":"🥤",
+      "Saya mau ke toilet":"🚽",
+      "Saya mau tidur":"😴",
+      "Saya mau main":"😫",
+    };
+
+    let c = document.getElementById('gridKebutuhan');
+    if (!arr.length) c.innerHTML = '<p>Belum ada kosakata ditambahkan.</p>';
+    else arr.forEach(item=>{
+      let emo = mapE[item.teks]||'❓';
+      let d = document.createElement('div');
+      d.className='item';
+      d.innerHTML = `<div class="emoji">${emo}</div><p>${item.teks}</p>`;
+      d.onclick = ()=> speak(item.teks);
+      c.appendChild(d);
+    });
+  </script>
+
+</body>
+</html>
