@@ -65,15 +65,27 @@
     }
 
     // ambil data
-    let arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan')||'[]');
-    // mapping teks→emoji
-    const mapE = {
-      "Saya mau makan":"🍚",
-      "Saya mau minum":"🥤",
-      "Saya mau ke toilet":"🚽",
-      "Saya mau tidur":"😴",
-      "Saya mau main":"😫",
-    };
+    // Ambil data dari localStorage, jika belum ada simpan daftar default
+let arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan') || 'null');
+if (!arr) {
+  arr = [
+    { teks: 'Saya mau makan', gambar: 'lapar.png' },
+    { teks: 'Saya mau minum', gambar: 'minum.png' },
+    { teks: 'Saya mau ke toilet', gambar: 'toilet.png' },
+    { teks: 'Saya mau tidur', gambar: 'tidur.png' },
+    { teks: 'Saya mau main', gambar: 'main.png' }
+  ];
+  localStorage.setItem('kosakata_kebutuhan', JSON.stringify(arr));
+}
+
+// mapping teks → emoji
+const mapE = {
+  "Saya mau makan":    "🍚",
+  "Saya mau minum":    "🥤",
+  "Saya mau ke toilet":"🚽",
+  "Saya mau tidur":    "😴",
+  "Saya mau main":     "🎲"  // gunakan emoji yang lebih pas
+};
 
     let c = document.getElementById('gridKebutuhan');
     if (!arr.length) c.innerHTML = '<p>Belum ada kosakata ditambahkan.</p>';
