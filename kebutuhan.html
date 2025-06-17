@@ -4,8 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kategori Kebutuhan Harian</title>
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_KEY"></script>
-  <style>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <script>
+  window.onload = () => {
+    const container = document.getElementById('gridKebutuhan');
+    const sel = document.getElementById('voiceSelect');
+    sel.innerHTML = `
+      <option value="Indonesian Female">Anak Perempuan</option>
+      <option value="Indonesian Male">Anak Laki-laki</option>
+    `;
+    const arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan') || '[]');
+    arr.forEach(item => {
+      const emo = {/* mapping emoji */}[item.teks] || '❓';
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `<div class="emoji">${emo}</div><p>${item.teks}</p>`;
+      // pasang handler klik di dalam onload
+      div.onclick = () => responsiveVoice.speak(item.teks, sel.value);
+      container.appendChild(div);
+    });
+  };
+</script>
+    <style>
     body { font-family: Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; text-align: center; }
     h1 { color: #2c3e50; }
     .voice-select { margin: 10px auto; max-width: 300px; text-align: center; }
