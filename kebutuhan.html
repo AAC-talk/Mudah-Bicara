@@ -10,8 +10,8 @@
     const container = document.getElementById('gridKebutuhan');
     const sel = document.getElementById('voiceSelect');
     sel.innerHTML = `
-      <option value="Indonesian Female">Anak Perempuan</option>
-      <option value="Indonesian Male">Anak Laki-laki</option>
+      <option value="Indonesian Female">Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
     `;
     const arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan') || '[]');
     arr.forEach(item => {
@@ -43,8 +43,8 @@
   <div class="voice-select">
     <label for="voiceSelect">Pilih Suara:</label>
     <select id="voiceSelect">
-      <option value="Indonesian Female">Anak Perempuan</option>
-      <option value="Indonesian Male">Anak Laki-laki</option>
+      <option value="Indonesian Female">Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
     </select>
   </div>
 
