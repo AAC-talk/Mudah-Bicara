@@ -15,7 +15,6 @@
     `;
     const arr = JSON.parse(localStorage.getItem('kosakata_kebutuhan') || '[]');
     arr.forEach(item => {
-      const emo = {/* mapping emoji */}[item.teks] || '❓';
       const div = document.createElement('div');
       div.className = 'item';
       div.innerHTML = `<div class="emoji">${emo}</div><p>${item.teks}</p>`;
@@ -82,7 +81,6 @@
       container.innerHTML = '<p>Belum ada kosakata ditambahkan.</p>';
     } else {
       arr.forEach(item => {
-        const emoji = mapE[item.teks] || '❓';
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `<div class=\"emoji\">${emoji}</div><p>${item.teks}</p>`;
