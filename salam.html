@@ -7,13 +7,13 @@
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <script>
   window.onload = () => {
-    const container = document.getElementById('gridsalamsosial');
+    const container = document.getElementById('gridsalam');
     const sel = document.getElementById('voiceSelect');
     sel.innerHTML = `
       <option value="Indonesian Female">Perempuan</option>
       <option value="Indonesian Male">Laki-laki</option>
     `;
-    const arr = JSON.parse(localStorage.getItem('kosakata_salamsosial') || '[]');
+    const arr = JSON.parse(localStorage.getItem('kosakata_salam') || '[]');
     arr.forEach(item => {
       const div = document.createElement('div');
       div.className = 'item';
@@ -56,7 +56,7 @@
     }
 
     // Data default jika localStorage kosong
-    let arr = JSON.parse(localStorage.getItem('kosakata_salamsosial') || 'null');
+    let arr = JSON.parse(localStorage.getItem('kosakata_salam') || 'null');
     if (!arr) {
       arr = [
         { teks: 'Selamat pagi' },
@@ -76,7 +76,7 @@
         { teks: 'Saya sedang sakit' },
         { teks: 'Sampai jumpa' }
       ];
-      localStorage.setItem('kosakata_salamsosial', JSON.stringify(arr));
+      localStorage.setItem('kosakata_salam', JSON.stringify(arr));
     }
 
     const mapE = {
@@ -98,7 +98,7 @@
       'Sampai jumpa': '👋🏻'
     };
 
-    const container = document.getElementById('gridsalamsosial');
+    const container = document.getElementById('gridsalam');
     if (!arr.length) {
       container.innerHTML = '<p>Belum ada kosakata ditambahkan.</p>';
     } else {
