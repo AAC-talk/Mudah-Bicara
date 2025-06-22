@@ -64,22 +64,31 @@
       position: absolute;
       bottom: 10px;
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 15px;
+      pointer-events: none; /* biar container ga ganggu klik tombol */
     }
 
     .controls button {
+      position: absolute;
+      bottom: 0;
       background: none;
       border: none;
       font-size: 1.3em;
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+      pointer-events: auto; /* supaya tombol bisa diklik */
     }
 
     .controls button:hover {
       transform: scale(1.2);
+    }
+
+    .controls button.speaker {
+      left: 15px;
+    }
+
+    .controls button.mic {
+      right: 15px;
     }
 
     .feedback {
@@ -155,8 +164,8 @@
           <div class="emoji">${emoji}</div>
           <p>${teks}</p>
           <div class="controls">
-            <button onclick="bicara('${teks}')">🔊</button>
-            <button onclick="latih('${teks}', '${idTeks}')">🎤</button>
+            <button class="speaker" onclick="bicara('${teks}')">🔊</button>
+            <button class="mic" onclick="latih('${teks}', '${idTeks}')">🎤</button>
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
