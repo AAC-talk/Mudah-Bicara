@@ -13,63 +13,59 @@
       padding: 20px;
       text-align: center;
     }
-
     h1 {
       color: #2c3e50;
     }
-
     .voice-select {
       margin: 10px auto 20px;
       max-width: 300px;
       text-align: center;
     }
-
     .voice-select select {
       width: 100%;
       padding: 8px;
       font-size: 1em;
       border-radius: 6px;
       border: 1px solid #ccc;
+      cursor: pointer;
     }
-
     .container {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 kolom */
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
       max-width: 600px;
       margin: 0 auto 40px;
     }
-
     .item {
       position: relative;
-      background: white;
-      border: 2px solid #ddd;
+      background-color: #a2d5f2; /* warna kotak background */
+      border: 2px solid #5b9bd5;
       border-radius: 12px;
       padding: 20px 20px 50px 20px;
-      box-shadow: 2px 2px 6px #ccc;
+      box-shadow: 2px 2px 6px #99999966;
       cursor: pointer;
       user-select: none;
+      transition: background-color 0.3s ease;
     }
-
+    .item:hover {
+      background-color: #74b9f9;
+    }
     .emoji {
       font-size: 3.5em;
       line-height: 1;
       user-select: none;
     }
-
     .item p {
       margin: 8px 0;
       font-size: 1.1em;
-      color: #333;
+      color: #0a3d62; /* warna teks kontras dengan background */
       user-select: none;
     }
-
     .controls {
       position: absolute;
       bottom: 10px;
       right: 25px;
     }
-
     .controls button.mic {
       background: none;
       border: none;
@@ -77,84 +73,74 @@
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+      color: #0a3d62;
     }
-
     .controls button.mic:hover {
       transform: scale(1.2);
+      color: #2d98da;
     }
-
     .feedback {
       margin-top: 6px;
       font-weight: bold;
       min-height: 20px;
       user-select: none;
+      color: #0a3d62;
     }
   </style>
 </head>
 <body>
 
-  <h1>Kategori: Salam & Sosial</h1>
+  <h1 id="judulKategori">Kategori: Salam & Sosial</h1>
 
   <div class="voice-select">
     <label for="voiceSelect">Pilih Suara:</label>
     <select id="voiceSelect">
-      <option value="Indonesian Female">Perempuan</option>
+      <option value="Indonesian Female" selected>Perempuan</option>
       <option value="Indonesian Male">Laki-laki</option>
     </select>
   </div>
 
-  <div class="container" id="gridSalam"></div>
+  <div class="container" id="gridKategori"></div>
 
   <script>
-    // Load sound effect dari link online (bisa diganti)
-    const soundClickMic = new Audio('https://cdn.freesound.org/previews/569/569796_1648176-lq.mp3'); // klik mic
-    const soundRecordStart = new Audio('https://cdn.freesound.org/previews/322/322663_5260874-lq.mp3'); // mulai rekam
-    const soundCorrect = new Audio('https://cdn.freesound.org/previews/276/276020_5121236-lq.mp3'); // benar
-    const soundWrong = new Audio('https://cdn.freesound.org/previews/183/183829_2959436-lq.mp3'); // salah
+    // Sound effect audio (bisa ganti source kalau mau)
+    const soundClickMic = new Audio('https://cdn.freesound.org/previews/569/569796_1648176-lq.mp3');
+    const soundRecordStart = new Audio('https://cdn.freesound.org/previews/322/322663_5260874-lq.mp3');
+    const soundCorrect = new Audio('https://cdn.freesound.org/previews/276/276020_5121236-lq.mp3');
+    const soundWrong = new Audio('https://cdn.freesound.org/previews/183/183829_2959436-lq.mp3');
 
-    window.onload = () => {
-      const arr = [
-        { teks: 'Selamat pagi' },
-        { teks: 'Selamat siang' },
-        { teks: 'Selamat sore' },
-        { teks: 'Selamat malam' },
-        { teks: 'Nama kamu siapa?' },
-        { teks: 'Nama saya ...' },
-        { teks: 'Maaf' },
-        { teks: 'Terima kasih' },
-        { teks: 'Sama-sama' },
-        { teks: 'Tolong' },
-        { teks: 'Permisi' },
-        { teks: 'Saya mohon izin' },
-        { teks: 'Apa kabar?' },
-        { teks: 'Kabar saya baik' },
-        { teks: 'Saya sedang sakit' },
-        { teks: 'Sampai jumpa' }
-      ];
+    // Data kategori
+    const dataKategori = {
+      judul: "Salam & Sosial",
+      items: [
+        { teks: 'Selamat pagi', emoji: '🌄' },
+        { teks: 'Selamat siang', emoji: '🌤' },
+        { teks: 'Selamat sore', emoji: '🌆' },
+        { teks: 'Selamat malam', emoji: '🌉' },
+        { teks: 'Nama kamu siapa?', emoji: '💁🏻‍♂️' },
+        { teks: 'Nama saya ...', emoji: '🙋🏻‍♀️' },
+        { teks: 'Maaf', emoji: '🙇🏻‍♂️' },
+        { teks: 'Terima kasih', emoji: '😇🙏🏻' },
+        { teks: 'Sama-sama', emoji: '🤗' },
+        { teks: 'Tolong', emoji: '🥺🙏🏻' },
+        { teks: 'Permisi', emoji: '🙏🏻' },
+        { teks: 'Saya mohon izin', emoji: '🙏🏻' },
+        { teks: 'Apa kabar?', emoji: '🤗' },
+        { teks: 'Kabar saya baik', emoji: '👍🏻' },
+        { teks: 'Saya sedang sakit', emoji: '🤒' },
+        { teks: 'Sampai jumpa', emoji: '👋🏻' },
+      ]
+    };
 
-      const mapE = {
-        'Selamat pagi': '🌄',
-        'Selamat siang': '🌤',
-        'Selamat sore': '🌆',
-        'Selamat malam': '🌉',
-        'Nama kamu siapa?': '💁🏻‍♂️',
-        'Nama saya ...': '🙋🏻‍♀️',
-        'Maaf': '🙇🏻‍♂️',
-        'Terima kasih': '😇🙏🏻',
-        'Sama-sama': '🤗',
-        'Tolong': '🥺🙏🏻',
-        'Permisi': '🙏🏻',
-        'Saya mohon izin': '🙏🏻',
-        'Apa kabar?': '🤗',
-        'Kabar saya baik': '👍🏻',
-        'Saya sedang sakit': '🤒',
-        'Sampai jumpa': '👋🏻',
-      };
+    // Fungsi generate grid
+    function buatGridKategori(data) {
+      document.getElementById('judulKategori').innerText = `Kategori: ${data.judul}`;
+      const container = document.getElementById('gridKategori');
+      container.innerHTML = '';
 
-      const container = document.getElementById('gridSalam');
-      arr.forEach(item => {
+      data.items.forEach(item => {
         const teks = item.teks;
-        const emoji = mapE[teks] || '❓';
+        const emoji = item.emoji || '❓';
         const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
         const div = document.createElement('div');
@@ -168,22 +154,24 @@
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
 
-        // Klik area selain tombol mic => bicara
         div.onclick = () => {
           bicara(teks);
         };
 
         container.appendChild(div);
       });
-    };
+    }
 
+    // Fungsi bicara
     function bicara(teks) {
-      const voice = document.getElementById('voiceSelect').value;
+      const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
       responsiveVoice.speak(teks, voice);
     }
 
+    // Fungsi latihan bicara dengan speech recognition dan sound effect
     function latih(teksTarget, id) {
       soundClickMic.play();
+
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'id-ID';
       recognition.interimResults = false;
@@ -212,6 +200,7 @@
       recognition.start();
     }
 
+    // Fungsi hitung kemiripan teks (Levenshtein)
     function kemiripan(a, b) {
       const jarak = levenshtein(a, b);
       return 1 - jarak / Math.max(a.length, b.length);
@@ -232,9 +221,13 @@
           );
         }
       }
-
       return dp[b.length][a.length];
     }
+
+    // Inisialisasi saat halaman dimuat
+    window.onload = () => {
+      buatGridKategori(dataKategori);
+    };
   </script>
 
 </body>
