@@ -19,7 +19,7 @@
     }
 
     .voice-select {
-      margin: 10px auto;
+      margin: 10px auto 20px;
       max-width: 300px;
       text-align: center;
     }
@@ -34,10 +34,10 @@
 
     .container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(2, 1fr); /* 2 kolom */
       gap: 20px;
-      max-width: 900px;
-      margin: 30px auto;
+      max-width: 600px;
+      margin: 0 auto 40px;
     }
 
     .item {
@@ -45,56 +45,49 @@
       background: white;
       border: 2px solid #ddd;
       border-radius: 12px;
-      padding: 20px 20px 50px 20px; /* space bawah untuk tombol */
+      padding: 20px 20px 50px 20px;
       box-shadow: 2px 2px 6px #ccc;
+      cursor: pointer;
+      user-select: none;
     }
 
     .emoji {
       font-size: 3.5em;
       line-height: 1;
+      user-select: none;
     }
 
     .item p {
       margin: 8px 0;
       font-size: 1.1em;
       color: #333;
+      user-select: none;
     }
 
     .controls {
       position: absolute;
       bottom: 10px;
-      width: 100%;
-      pointer-events: none; /* biar container ga ganggu klik tombol */
+      right: 25px;
     }
 
-    .controls button {
-      position: absolute;
-      bottom: 0;
+    .controls button.mic {
       background: none;
       border: none;
       font-size: 1.3em;
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
-      pointer-events: auto; /* supaya tombol bisa diklik */
     }
 
-    .controls button:hover {
+    .controls button.mic:hover {
       transform: scale(1.2);
-    }
-
-    .controls button.speaker {
-      left: 15px;
-    }
-
-    .controls button.mic {
-      right: 15px;
     }
 
     .feedback {
       margin-top: 6px;
       font-weight: bold;
       min-height: 20px;
+      user-select: none;
     }
   </style>
 </head>
@@ -113,6 +106,12 @@
   <div class="container" id="gridSalam"></div>
 
   <script>
+    // Load sound effect dari link online (bisa diganti)
+    const soundClickMic = new Audio('https://cdn.freesound.org/previews/569/569796_1648176-lq.mp3'); // klik mic
+    const soundRecordStart = new Audio('https://cdn.freesound.org/previews/322/322663_5260874-lq.mp3'); // mulai rekam
+    const soundCorrect = new Audio('https://cdn.freesound.org/previews/276/276020_5121236-lq.mp3'); // benar
+    const soundWrong = new Audio('https://cdn.freesound.org/previews/183/183829_2959436-lq.mp3'); // salah
+
     window.onload = () => {
       const arr = [
         { teks: 'Selamat pagi' },
@@ -164,11 +163,16 @@
           <div class="emoji">${emoji}</div>
           <p>${teks}</p>
           <div class="controls">
-            <button class="speaker" onclick="bicara('${teks}')">🔊</button>
-            <button class="mic" onclick="latih('${teks}', '${idTeks}')">🎤</button>
+            <button class="mic" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
+
+        // Klik area selain tombol mic => bicara
+        div.onclick = () => {
+          bicara(teks);
+        };
+
         container.appendChild(div);
       });
     };
@@ -179,9 +183,14 @@
     }
 
     function latih(teksTarget, id) {
+      soundClickMic.play();
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'id-ID';
       recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        soundRecordStart.play();
+      };
 
       recognition.onresult = (event) => {
         const hasil = event.results[0][0].transcript.toLowerCase();
@@ -191,9 +200,11 @@
         if (skor >= 0.8) {
           feedback.innerText = "✅ Bagus!";
           feedback.style.color = "green";
+          soundCorrect.play();
         } else {
           feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
           feedback.style.color = "red";
+          soundWrong.play();
         }
       };
 
