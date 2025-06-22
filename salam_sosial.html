@@ -41,10 +41,11 @@
     }
 
     .item {
+      position: relative;
       background: white;
       border: 2px solid #ddd;
       border-radius: 12px;
-      padding: 20px;
+      padding: 20px 20px 50px 20px; /* space bawah untuk tombol */
       box-shadow: 2px 2px 6px #ccc;
     }
 
@@ -59,28 +60,32 @@
       color: #333;
     }
 
-    button {
-      font-size: 1em;
-      margin: 4px;
-      padding: 6px 12px;
-      border-radius: 8px;
+    .controls {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+    }
+
+    .controls button {
+      background: none;
       border: none;
+      font-size: 1.3em;
       cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
     }
 
-    .btn-speak {
-      background-color: #00bcd4;
-      color: white;
-    }
-
-    .btn-test {
-      background-color: #4caf50;
-      color: white;
+    .controls button:hover {
+      transform: scale(1.2);
     }
 
     .feedback {
       margin-top: 6px;
       font-weight: bold;
+      min-height: 20px;
     }
   </style>
 </head>
@@ -149,8 +154,10 @@
         div.innerHTML = `
           <div class="emoji">${emoji}</div>
           <p>${teks}</p>
-          <button class="btn-speak" onclick="bicara('${teks}')">🔊 Dengar</button>
-          <button class="btn-test" onclick="latih('${teks}', '${idTeks}')">🎤 Latih Ucapan</button>
+          <div class="controls">
+            <button onclick="bicara('${teks}')">🔊</button>
+            <button onclick="latih('${teks}', '${idTeks}')">🎤</button>
+          </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
         container.appendChild(div);
