@@ -7,20 +7,23 @@
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8fafc;
+      font-family: 'Quicksand', cursive, quicksand;
+      background-color: #1e3a8a; /* biru gelap "oligarki" */
       margin: 0;
       padding: 20px;
       text-align: center;
     }
+
     h1 {
-      color: #2c3e50;
+      color: #ffffff;
+      margin-bottom: 10px;
     }
+
     .voice-select {
       margin: 10px auto 20px;
       max-width: 300px;
-      text-align: center;
     }
+
     .voice-select select {
       width: 100%;
       padding: 8px;
@@ -29,61 +32,61 @@
       border: 1px solid #ccc;
       cursor: pointer;
     }
+
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      gap: 15px;
       max-width: 600px;
       margin: 0 auto 40px;
     }
+
     .item {
       position: relative;
-      background-color: #a2d5f2; /* warna kotak background */
-      border: 2px solid #5b9bd5;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
       border-radius: 12px;
-      padding: 20px 20px 50px 20px;
-      box-shadow: 2px 2px 6px #99999966;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    .item:hover {
-      background-color: #74b9f9;
-    }
-    .emoji {
-      font-size: 3.5em;
-      line-height: 1;
-      user-select: none;
-    }
-    .item p {
-      margin: 8px 0;
-      font-size: 1.1em;
-      color: #0a3d62; /* warna teks kontras dengan background */
-      user-select: none;
-    }
-    .controls {
-      position: absolute;
-      bottom: 10px;
-      right: 25px;
-    }
-    .controls button.mic {
-      background: none;
-      border: none;
-      font-size: 1.3em;
+      padding: 10px 10px 36px 10px;
+      box-shadow: 2px 2px 6px #00000033;
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+    }
+
+    .item:hover {
+      transform: scale(1.03);
+    }
+
+    .emoji {
+      font-size: 2.5em;
+      line-height: 1;
+    }
+
+    .item p {
+      margin: 5px 0;
+      font-size: 1em;
+      color: #1f2937;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+    }
+
+    .controls button.mic {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
       color: #0a3d62;
     }
-    .controls button.mic:hover {
-      transform: scale(1.2);
-      color: #2d98da;
-    }
+
     .feedback {
-      margin-top: 6px;
+      margin-top: 4px;
       font-weight: bold;
-      min-height: 20px;
-      user-select: none;
+      min-height: 18px;
+      font-size: 0.9em;
       color: #0a3d62;
     }
   </style>
@@ -93,7 +96,7 @@
   <h1 id="judulKategori">Kategori: Salam & Sosial</h1>
 
   <div class="voice-select">
-    <label for="voiceSelect">Pilih Suara:</label>
+    <label for="voiceSelect" style="color:white">Pilih Suara:</label>
     <select id="voiceSelect">
       <option value="Indonesian Female" selected>Perempuan</option>
       <option value="Indonesian Male">Laki-laki</option>
@@ -103,13 +106,12 @@
   <div class="container" id="gridKategori"></div>
 
   <script>
-    // Sound effect audio (bisa ganti source kalau mau)
-    const soundClickMic = new Audio('https://cdn.freesound.org/previews/569/569796_1648176-lq.mp3');
-    const soundRecordStart = new Audio('https://cdn.freesound.org/previews/322/322663_5260874-lq.mp3');
-    const soundCorrect = new Audio('https://cdn.freesound.org/previews/276/276020_5121236-lq.mp3');
-    const soundWrong = new Audio('https://cdn.freesound.org/previews/183/183829_2959436-lq.mp3');
+    // Sound effect (bebas pakai atau ganti link lain)
+    const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+    const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
-    // Data kategori
     const dataKategori = {
       judul: "Salam & Sosial",
       items: [
@@ -128,11 +130,10 @@
         { teks: 'Apa kabar?', emoji: '🤗' },
         { teks: 'Kabar saya baik', emoji: '👍🏻' },
         { teks: 'Saya sedang sakit', emoji: '🤒' },
-        { teks: 'Sampai jumpa', emoji: '👋🏻' },
+        { teks: 'Sampai jumpa', emoji: '👋🏻' }
       ]
     };
 
-    // Fungsi generate grid
     function buatGridKategori(data) {
       document.getElementById('judulKategori').innerText = `Kategori: ${data.judul}`;
       const container = document.getElementById('gridKategori');
@@ -153,38 +154,28 @@
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
-
-        div.onclick = () => {
-          bicara(teks);
-        };
-
+        div.onclick = () => bicara(teks);
         container.appendChild(div);
       });
     }
 
-    // Fungsi bicara
     function bicara(teks) {
       const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
       responsiveVoice.speak(teks, voice);
     }
 
-    // Fungsi latihan bicara dengan speech recognition dan sound effect
     function latih(teksTarget, id) {
       soundClickMic.play();
-
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'id-ID';
       recognition.interimResults = false;
 
-      recognition.onstart = () => {
-        soundRecordStart.play();
-      };
+      recognition.onstart = () => soundRecordStart.play();
 
       recognition.onresult = (event) => {
         const hasil = event.results[0][0].transcript.toLowerCase();
         const skor = kemiripan(hasil, teksTarget.toLowerCase());
         const feedback = document.getElementById("feedback-" + id);
-
         if (skor >= 0.8) {
           feedback.innerText = "✅ Bagus!";
           feedback.style.color = "green";
@@ -200,7 +191,6 @@
       recognition.start();
     }
 
-    // Fungsi hitung kemiripan teks (Levenshtein)
     function kemiripan(a, b) {
       const jarak = levenshtein(a, b);
       return 1 - jarak / Math.max(a.length, b.length);
@@ -210,7 +200,6 @@
       const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
       for (let i = 0; i <= b.length; i++) dp[i][0] = i;
       for (let j = 0; j <= a.length; j++) dp[0][j] = j;
-
       for (let i = 1; i <= b.length; i++) {
         for (let j = 1; j <= a.length; j++) {
           const cost = b[i - 1] === a[j - 1] ? 0 : 1;
@@ -224,7 +213,6 @@
       return dp[b.length][a.length];
     }
 
-    // Inisialisasi saat halaman dimuat
     window.onload = () => {
       buatGridKategori(dataKategori);
     };
