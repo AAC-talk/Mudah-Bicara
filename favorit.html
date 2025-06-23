@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AAC Favorit Demo</title>
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #e3f2fd;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 { color: #1565c0; }
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 600px;
+    margin: auto;
+    gap: 15px;
+  }
+  .item {
+    position: relative;
+    background: white;
+    border: 2px solid #90caf9;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    box-shadow: 0 0 8px #90caf9aa;
+  }
+  .emoji {
+    font-size: 3em;
+  }
+  .favorite {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s;
+    user-select: none;
+  }
+  .favorite.active {
+    color: gold;
+  }
+</style>
+</head>
+<body>
+
+<h1>Kategori Salam & Sosial</h1>
+<div class="container" id="container"></div>
+
+<script>
+  const data = [
+    { teks: 'Selamat pagi', emoji: '🌄' },
+    { teks: 'Selamat siang', emoji: '🌤' },
+    { teks: 'Terima kasih', emoji: '🙏🏻' },
+    { teks: 'Tolong', emoji: '🥺🙏🏻' },
+    { teks: 'Sampai jumpa', emoji: '👋🏻' },
+  ];
+
+  function loadFavorit() {
+    return JSON.parse(localStorage.getItem('favoritList')) || [];
+  }
+
+  function saveFavorit(list) {
+    localStorage.setItem('favoritList', JSON.stringify(list));
+  }
+
+  function toggleFavorit(teks) {
+    let favoritList = loadFavorit();
+    const index = favoritList.indexOf(teks);
+    if (index > -1) {
+      favoritList.splice(index, 1);
+    } else {
+      favoritList.push(teks);
+    }
+    saveFavorit(favoritList);
+    renderItems();
+  }
+
+  function renderItems() {
+    const container = document.getElementById('container');
+    container.innerHTML = '';
+    const favoritList = loadFavorit();
+
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'item';
+
+      const isFavorit = favoritList.includes(item.teks);
+      const starClass = isFavorit ? 'favorite active' : 'favorite';
+
+      div.innerHTML = `
+        <div class="${starClass}" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</div>
+        <div class="emoji">${item.emoji}</div>
+        <p>${item.teks}</p>
+      `;
+
+      div.onclick = () => {
+        responsiveVoice.speak(item.teks, "Indonesian Female");
+      };
+
+      container.appendChild(div);
+    });
+  }
+
+  window.onload = renderItems;
+</script>
+
+</body>
+</html>
