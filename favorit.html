@@ -1,114 +1,252 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AAC Favorit Demo</title>
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #e3f2fd;
-    padding: 20px;
-    text-align: center;
-  }
-  h1 { color: #1565c0; }
-  .container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 600px;
-    margin: auto;
-    gap: 15px;
-  }
-  .item {
-    position: relative;
-    background: white;
-    border: 2px solid #90caf9;
-    border-radius: 12px;
-    padding: 20px;
-    cursor: pointer;
-    box-shadow: 0 0 8px #90caf9aa;
-  }
-  .emoji {
-    font-size: 3em;
-  }
-  .favorite {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: gray;
-    transition: color 0.3s;
-    user-select: none;
-  }
-  .favorite.active {
-    color: gold;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Favorit Saya</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', cursive, arial;
+      background-color: #80daeb; /* medium sky blue */
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .item {
+      position: relative;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 10px 36px 10px;
+      box-shadow: 2px 2px 6px #00000033;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .item:hover {
+      transform: scale(1.03);
+    }
+
+    .emoji {
+      font-size: 2.5em;
+      line-height: 1;
+    }
+
+    .item p {
+      margin: 5px 0;
+      font-size: 1em;
+      color: #1f2937;
+    }
+
+    .controls {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Tombol hapus favorit (bintang) */
+    .controls button.fav {
+      font-size: 1.6em;
+      color: #FFD700; /* selalu emas karena ini halaman favorit */
+      background: none;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease, filter 0.3s ease;
+      filter: none;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 10;
+    }
+
+    /* Tombol mic di kanan bawah */
+    .controls button.mic {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: #0a3d62;
+      position: relative;
+      z-index: 5;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-weight: bold;
+      min-height: 18px;
+      font-size: 0.9em;
+      color: #0a3d62;
+    }
+
+  </style>
 </head>
 <body>
 
-<h1>Kategori Salam & Sosial</h1>
-<div class="container" id="container"></div>
+  <h1>Favorit Saya</h1>
 
-<script>
-  const data = [
-    { teks: 'Selamat pagi', emoji: '🌄' },
-    { teks: 'Selamat siang', emoji: '🌤' },
-    { teks: 'Terima kasih', emoji: '🙏🏻' },
-    { teks: 'Tolong', emoji: '🥺🙏🏻' },
-    { teks: 'Sampai jumpa', emoji: '👋🏻' },
-  ];
+  <div class="container" id="gridFavorit"></div>
 
-  function loadFavorit() {
-    return JSON.parse(localStorage.getItem('favoritList')) || [];
-  }
+  <script>
+    // Sound effect
+    const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+    const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
-  function saveFavorit(list) {
-    localStorage.setItem('favoritList', JSON.stringify(list));
-  }
+    // Data master kategori - kalau ada, bisa juga dari file lain
+    // Bisa di-sync dengan halaman kategori lain (perlu update manual kalau ada data baru)
+    const dataMaster = [
+      { teks: 'Selamat pagi', emoji: '🌄' },
+      { teks: 'Selamat siang', emoji: '🌤' },
+      { teks: 'Selamat sore', emoji: '🌆' },
+      { teks: 'Selamat malam', emoji: '🌉' },
+      { teks: 'Nama kamu siapa?', emoji: '💁🏻‍♂️' },
+      { teks: 'Nama saya', emoji: '🙋🏻‍♀️' },
+      { teks: 'Maaf', emoji: '🙇🏻‍♂️' },
+      { teks: 'Terima kasih', emoji: '😇🙏🏻' },
+      { teks: 'Sama-sama', emoji: '🤗' },
+      { teks: 'Tolong', emoji: '🥺🙏🏻' },
+      { teks: 'Permisi', emoji: '🙏🏻' },
+      { teks: 'Saya mohon izin', emoji: '🙏🏻' },
+      { teks: 'Apa kabar?', emoji: '🤗' },
+      { teks: 'Kabar saya baik', emoji: '👍🏻' },
+      { teks: 'Saya sedang sakit', emoji: '🤒' },
+      { teks: 'Sampai jumpa', emoji: '👋🏻' }
+    ];
 
-  function toggleFavorit(teks) {
-    let favoritList = loadFavorit();
-    const index = favoritList.indexOf(teks);
-    if (index > -1) {
-      favoritList.splice(index, 1);
-    } else {
-      favoritList.push(teks);
+    // Load favorit dari localStorage
+    function loadFavorit() {
+      return JSON.parse(localStorage.getItem('favoritList')) || [];
     }
-    saveFavorit(favoritList);
-    renderItems();
-  }
 
-  function renderItems() {
-    const container = document.getElementById('container');
-    container.innerHTML = '';
-    const favoritList = loadFavorit();
+    // Simpan favorit ke localStorage
+    function saveFavorit(list) {
+      localStorage.setItem('favoritList', JSON.stringify(list));
+    }
 
-    data.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'item';
+    // Hapus favorit (dari halaman favorit)
+    function hapusFavorit(teks) {
+      let favoritList = loadFavorit();
+      const idx = favoritList.indexOf(teks);
+      if (idx > -1) {
+        favoritList.splice(idx, 1);
+        saveFavorit(favoritList);
+        renderFavorit();
+      }
+    }
 
-      const isFavorit = favoritList.includes(item.teks);
-      const starClass = isFavorit ? 'favorite active' : 'favorite';
+    // Bicara pakai responsiveVoice
+    function bicara(teks) {
+      const voice = "Indonesian Female"; // bisa ganti sesuai kebutuhan
+      responsiveVoice.speak(teks, voice);
+    }
 
-      div.innerHTML = `
-        <div class="${starClass}" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</div>
-        <div class="emoji">${item.emoji}</div>
-        <p>${item.teks}</p>
-      `;
+    // Fungsi latihan bicara dengan speech recognition
+    function latih(teksTarget, id) {
+      soundClickMic.play();
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
 
-      div.onclick = () => {
-        responsiveVoice.speak(item.teks, "Indonesian Female");
+      recognition.onstart = () => soundRecordStart.play();
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript.toLowerCase();
+        const skor = kemiripan(hasil, teksTarget.toLowerCase());
+        const feedback = document.getElementById("feedback-" + id);
+        if (skor >= 0.8) {
+          feedback.innerText = "✅ Bagus!";
+          feedback.style.color = "green";
+          soundCorrect.play();
+        } else {
+          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
+          feedback.style.color = "red";
+          soundWrong.play();
+        }
       };
 
-      container.appendChild(div);
-    });
-  }
+      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+      recognition.start();
+    }
 
-  window.onload = renderItems;
-</script>
+    // Hitung kemiripan dua string (Levenshtein)
+    function kemiripan(a, b) {
+      const jarak = levenshtein(a, b);
+      return 1 - jarak / Math.max(a.length, b.length);
+    }
+
+    function levenshtein(a, b) {
+      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return dp[b.length][a.length];
+    }
+
+    // Render halaman favorit
+    function renderFavorit() {
+      const container = document.getElementById('gridFavorit');
+      container.innerHTML = '';
+
+      const favoritList = loadFavorit();
+
+      if (favoritList.length === 0) {
+        container.innerHTML = '<p style="color:white;">Belum ada kata favorit. Silakan pilih kata favorit di halaman kategori.</p>';
+        return;
+      }
+
+      favoritList.forEach(teks => {
+        const dataItem = dataMaster.find(d => d.teks === teks);
+        const emoji = dataItem ? dataItem.emoji : '❓';
+        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <div class="emoji">${emoji}</div>
+          <p>${teks}</p>
+          <div class="controls">
+            <button class="fav" title="Hapus dari Favorit" onclick="event.stopPropagation(); hapusFavorit('${teks}')">⭐</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
+          </div>
+          <p class="feedback" id="feedback-${idTeks}"></p>
+        `;
+        div.onclick = () => bicara(teks);
+        container.appendChild(div);
+      });
+    }
+
+    window.onload = () => {
+      renderFavorit();
+    };
+  </script>
 
 </body>
 </html>
