@@ -42,16 +42,28 @@
     }
 
     .item {
-      position: relative; /* penting buat posisi absolute di dalamnya */
-      background-color: #ffffff;
-      border: 2px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 10px 10px 36px 10px;
+      padding: 8px 10px 20px 10px; /* Kurangi padding bawah dari 36px jadi 20px */
       box-shadow: 2px 2px 6px #00000033;
+      border-radius: 12px;
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      position: relative;
     }
+
+.item p {
+  margin: 4px 0;
+  font-size: 0.9em; /* sedikit kecilin font */
+  color: #1f2937;
+}
+
+.emoji {
+  font-size: 2em; /* sedikit kecilin emoji */
+  line-height: 1;
+}
+
 
     .item:hover {
       transform: scale(1.03);
