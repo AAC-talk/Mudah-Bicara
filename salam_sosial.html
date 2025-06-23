@@ -81,18 +81,22 @@
       top: 8px;
       left: 8px;
       font-size: 1.6em;
-      color: gray;
+      color: #888; /* warna abu-abu saat belum favorit */
       background: none;
       border: none;
       cursor: pointer;
       user-select: none;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, filter 0.3s ease;
       z-index: 10;
+      filter: grayscale(70%);
     }
 
     .controls button.fav.active {
-      color: gold;
+      color: #FFD700; /* warna emas terang */
+      filter: none;
+      text-shadow: 0 0 5px #FFD700;
     }
+
 
     /* Tombol mic di kanan bawah */
     .controls button.mic {
