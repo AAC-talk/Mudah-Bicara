@@ -89,6 +89,20 @@
       font-size: 0.9em;
       color: #0a3d62;
     }
+
+    .favorite {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      font-size: 1.3em;
+      cursor: pointer;
+      color: gray;
+      transition: color 0.2s ease;
+    }
+
+  .favorite.favorit-aktif {
+    color: gold;
+  }
   </style>
 </head>
 <body>
@@ -144,29 +158,34 @@
     };
 
     function buatGridKategori(data) {
-      document.getElementById('judulKategori').innerText = `Kategori: ${data.judul}`;
       const container = document.getElementById('gridKategori');
       container.innerHTML = '';
+
+      const favoritList = JSON.parse(localStorage.getItem("favoritList")) || [];
 
       data.items.forEach(item => {
         const teks = item.teks;
         const emoji = item.emoji || '❓';
         const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const isFavorit = favoritList.includes(teks);
+        const bintangClass = isFavorit ? 'favorit-aktif' : '';
 
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
+          <div class="favorite ${bintangClass}" onclick="event.stopPropagation(); toggleFavorit('${teks}')">⭐</div>
           <div class="emoji">${emoji}</div>
           <p>${teks}</p>
           <div class="controls">
             <button class="mic" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
-        `;
+         `;
+
         div.onclick = () => bicara(teks);
         container.appendChild(div);
       });
-    }
+      }
 
     function bicara(teks) {
       const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
@@ -221,6 +240,20 @@
       }
       return dp[b.length][a.length];
     }
+
+    function toggleFavorit(teks) {
+      let favorit = JSON.parse(localStorage.getItem("favoritList")) || [];
+      const index = favorit.indexOf(teks);
+
+      if (index > -1) {
+        favorit.splice(index, 1);
+      } else {
+        favorit.push(teks);
+      }
+
+  localStorage.setItem("favoritList", JSON.stringify(favorit));
+  buatGridKategori(dataKategori);
+}
 
     window.onload = () => {
       buatGridKategori(dataKategori);
