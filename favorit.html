@@ -4,21 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Favorit Saya</title>
-  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', Arial, sans-serif;
-      background-color: #80daeb; /* medium sky blue */
-      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #80daeb;
       padding: 20px;
       text-align: center;
+      color: #1f2937;
     }
-
     h1 {
-      color: #ffffff;
+      color: white;
       margin-bottom: 20px;
     }
-
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -26,10 +23,8 @@
       max-width: 600px;
       margin: 0 auto 40px;
     }
-
     .item {
-      position: relative;
-      background-color: #ffffff;
+      background: white;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
       padding: 10px 10px 36px 10px;
@@ -37,50 +32,39 @@
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+      color: #1f2937;
+      position: relative;
     }
-
     .item:hover {
       transform: scale(1.03);
     }
-
     .emoji {
       font-size: 2.5em;
       line-height: 1;
-      display: inline-block;
-      margin: 0 3px;
     }
-
     .item p {
       margin: 5px 0;
       font-size: 1em;
-      color: #1f2937;
     }
-
     .controls {
-      position: relative;
+      position: absolute;
+      top: 8px;
+      left: 8px;
       display: flex;
-      justify-content: flex-end;
       gap: 8px;
     }
-
-    /* Tombol hapus favorit (bintang) */
-    .controls button.fav {
+    button.fav {
       font-size: 1.6em;
-      color: #FFD700; /* selalu emas karena ini halaman favorit */
+      color: #FFD700;
       background: none;
       border: none;
       cursor: pointer;
       user-select: none;
       transition: color 0.3s ease, filter 0.3s ease;
       filter: none;
-      position: absolute;
-      top: 8px;
-      left: 8px;
       z-index: 10;
     }
-
-    /* Tombol mic di kanan bawah */
-    .controls button.mic {
+    button.mic {
       background: none;
       border: none;
       font-size: 1.2em;
@@ -89,7 +73,6 @@
       position: relative;
       z-index: 5;
     }
-
     .feedback {
       margin-top: 4px;
       font-weight: bold;
@@ -97,7 +80,6 @@
       font-size: 0.9em;
       color: #0a3d62;
     }
-
   </style>
 </head>
 <body>
@@ -106,44 +88,32 @@
 
   <div class="container" id="gridFavorit"></div>
 
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <script>
-    // Sound effect
-    const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
-    const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
-    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
-    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
-
-    // Data master kategori
     const dataMaster = [
-      { teks: 'Selamat pagi', emoji: '🌄' },
-      { teks: 'Selamat siang', emoji: '🌤' },
-      { teks: 'Selamat sore', emoji: '🌆' },
-      { teks: 'Selamat malam', emoji: '🌉' },
-      { teks: 'Nama kamu siapa?', emoji: '💁🏻‍♂️' },
-      { teks: 'Nama saya', emoji: '🙋🏻‍♀️' },
-      { teks: 'Maaf', emoji: '🙇🏻‍♂️' },
-      { teks: 'Terima kasih', emoji: '😇 🙏🏻' },
-      { teks: 'Sama-sama', emoji: '🤗' },
-      { teks: 'Tolong', emoji: '🥺 🙏🏻' },
-      { teks: 'Permisi', emoji: '🙏🏻' },
-      { teks: 'Saya mohon izin', emoji: '🙏🏻' },
-      { teks: 'Apa kabar?', emoji: '🤗' },
-      { teks: 'Kabar saya baik', emoji: '👍🏻' },
-      { teks: 'Saya sedang sakit', emoji: '🤒' },
-      { teks: 'Sampai jumpa', emoji: '👋🏻' }
+      { teks: 'Saya di rumah', emoji: '🏡' },
+      { teks: 'Saya mau mandi', emoji: '🛀🏻' },
+      { teks: 'Saya mau makan', emoji: '🍛' },
+      { teks: 'Saya mau minum', emoji: '🥛' },
+      { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
+      { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
+      { teks: 'Saya mau pergi', emoji: '🛵' },
+      { teks: 'Saya mau sekolah', emoji: '🎒' },
+      { teks: 'Saya mau solat', emoji: '🕌' },
+      { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
+      { teks: 'Saya mau uang', emoji: '💵' },
+      { teks: 'Saya mau jajan', emoji: '🍩' },
+      { teks: 'Saya mau nonton tv', emoji: '📺' }
     ];
 
-    // Load favorit dari localStorage
     function loadFavorit() {
-      return JSON.parse(localStorage.getItem('favoritList')) || [];
+      return JSON.parse(localStorage.getItem('favoritList') || '[]');
     }
 
-    // Simpan favorit ke localStorage
     function saveFavorit(list) {
       localStorage.setItem('favoritList', JSON.stringify(list));
     }
 
-    // Hapus favorit
     function hapusFavorit(teks) {
       let favoritList = loadFavorit();
       const idx = favoritList.indexOf(teks);
@@ -154,64 +124,14 @@
       }
     }
 
-    // Bicara pakai responsiveVoice
     function bicara(teks) {
-      const voice = "Indonesian Female"; 
-      responsiveVoice.speak(teks, voice);
-    }
-
-    // Fungsi latihan bicara dengan speech recognition
-    function latih(teksTarget, id) {
-      soundClickMic.play();
-      const recognition = new webkitSpeechRecognition();
-      recognition.lang = 'id-ID';
-      recognition.interimResults = false;
-
-      recognition.onstart = () => soundRecordStart.play();
-
-      recognition.onresult = (event) => {
-        const hasil = event.results[0][0].transcript.toLowerCase();
-        const skor = kemiripan(hasil, teksTarget.toLowerCase());
-        const feedback = document.getElementById("feedback-" + id);
-        if (skor >= 0.8) {
-          feedback.innerText = "✅ Bagus!";
-          feedback.style.color = "green";
-          soundCorrect.play();
-        } else {
-          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
-          feedback.style.color = "red";
-          soundWrong.play();
-        }
-      };
-
-      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
-      recognition.start();
-    }
-
-    // Hitung kemiripan dua string (Levenshtein)
-    function kemiripan(a, b) {
-      const jarak = levenshtein(a, b);
-      return 1 - jarak / Math.max(a.length, b.length);
-    }
-
-    function levenshtein(a, b) {
-      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
-      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
-      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
-      for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
-          dp[i][j] = Math.min(
-            dp[i - 1][j] + 1,
-            dp[i][j - 1] + 1,
-            dp[i - 1][j - 1] + cost
-          );
-        }
+      if(window.responsiveVoice) {
+        responsiveVoice.speak(teks, "Indonesian Female");
+      } else {
+        alert('ResponsiveVoice.js tidak tersedia');
       }
-      return dp[b.length][a.length];
     }
 
-    // Render halaman favorit dengan emoji dipisah supaya tidak error
     function renderFavorit() {
       const container = document.getElementById('gridFavorit');
       container.innerHTML = '';
@@ -225,36 +145,24 @@
 
       favoritList.forEach(teks => {
         const dataItem = dataMaster.find(d => d.teks === teks);
-        const emojiRaw = dataItem ? dataItem.emoji : '❓';
-
-        // Pisah emoji jika ada spasi, lalu bungkus dengan span
-        const emojiHTML = emojiRaw
-          .split(' ')
-          .map(e => `<span class="emoji">${e}</span>`)
-          .join(' ');
-
-        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const emoji = dataItem ? dataItem.emoji : '❓';
 
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
-          ${emojiHTML}
+          <div class="emoji">${emoji}</div>
           <p>${teks}</p>
           <div class="controls">
             <button class="fav" title="Hapus dari Favorit" onclick="event.stopPropagation(); hapusFavorit('${teks}')">⭐</button>
-            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); bicara('${teks}')">🎤</button>
           </div>
-          <p class="feedback" id="feedback-${idTeks}"></p>
         `;
         div.onclick = () => bicara(teks);
         container.appendChild(div);
       });
     }
 
-    window.onload = () => {
-      renderFavorit();
-    };
+    window.onload = renderFavorit;
   </script>
-
 </body>
 </html>
