@@ -7,7 +7,7 @@
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
-      font-family: 'Arial', cursive, arial;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', Arial, sans-serif;
       background-color: #80daeb; /* medium sky blue */
       margin: 0;
       padding: 20px;
@@ -46,6 +46,8 @@
     .emoji {
       font-size: 2.5em;
       line-height: 1;
+      display: inline-block;
+      margin: 0 3px;
     }
 
     .item p {
@@ -111,8 +113,7 @@
     const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
     const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
-    // Data master kategori - kalau ada, bisa juga dari file lain
-    // Bisa di-sync dengan halaman kategori lain (perlu update manual kalau ada data baru)
+    // Data master kategori
     const dataMaster = [
       { teks: 'Selamat pagi', emoji: '🌄' },
       { teks: 'Selamat siang', emoji: '🌤' },
@@ -121,9 +122,9 @@
       { teks: 'Nama kamu siapa?', emoji: '💁🏻‍♂️' },
       { teks: 'Nama saya', emoji: '🙋🏻‍♀️' },
       { teks: 'Maaf', emoji: '🙇🏻‍♂️' },
-      { teks: 'Terima kasih', emoji: '😇🙏🏻' },
+      { teks: 'Terima kasih', emoji: '😇 🙏🏻' },
       { teks: 'Sama-sama', emoji: '🤗' },
-      { teks: 'Tolong', emoji: '🥺🙏🏻' },
+      { teks: 'Tolong', emoji: '🥺 🙏🏻' },
       { teks: 'Permisi', emoji: '🙏🏻' },
       { teks: 'Saya mohon izin', emoji: '🙏🏻' },
       { teks: 'Apa kabar?', emoji: '🤗' },
@@ -142,7 +143,7 @@
       localStorage.setItem('favoritList', JSON.stringify(list));
     }
 
-    // Hapus favorit (dari halaman favorit)
+    // Hapus favorit
     function hapusFavorit(teks) {
       let favoritList = loadFavorit();
       const idx = favoritList.indexOf(teks);
@@ -155,7 +156,7 @@
 
     // Bicara pakai responsiveVoice
     function bicara(teks) {
-      const voice = "Indonesian Female"; // bisa ganti sesuai kebutuhan
+      const voice = "Indonesian Female"; 
       responsiveVoice.speak(teks, voice);
     }
 
@@ -210,7 +211,7 @@
       return dp[b.length][a.length];
     }
 
-    // Render halaman favorit
+    // Render halaman favorit dengan emoji dipisah supaya tidak error
     function renderFavorit() {
       const container = document.getElementById('gridFavorit');
       container.innerHTML = '';
@@ -224,13 +225,20 @@
 
       favoritList.forEach(teks => {
         const dataItem = dataMaster.find(d => d.teks === teks);
-        const emoji = dataItem ? dataItem.emoji : '❓';
+        const emojiRaw = dataItem ? dataItem.emoji : '❓';
+
+        // Pisah emoji jika ada spasi, lalu bungkus dengan span
+        const emojiHTML = emojiRaw
+          .split(' ')
+          .map(e => `<span class="emoji">${e}</span>`)
+          .join(' ');
+
         const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
-          <div class="emoji">${emoji}</div>
+          ${emojiHTML}
           <p>${teks}</p>
           <div class="controls">
             <button class="fav" title="Hapus dari Favorit" onclick="event.stopPropagation(); hapusFavorit('${teks}')">⭐</button>
