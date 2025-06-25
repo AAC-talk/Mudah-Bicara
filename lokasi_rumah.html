@@ -1,352 +1,388 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kategori: Di Rumah</title>
-  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #80daeb;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: white;
-      margin-bottom: 10px;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
-    .item {
-      background: white;
-      padding: 10px 15px;
-      border-radius: 12px;
-      box-shadow: 2px 2px 6px #00000033;
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-      transition: transform 0.2s ease;
-      border: 2px solid #cbd5e1;
-    }
-    .item:hover {
-      transform: scale(1.03);
-    }
-    .emoji {
-      font-size: 2.5em;
-      line-height: 1;
-    }
-    .item p {
-      margin: 8px 0 4px;
-      font-size: 1.1em;
-      color: #1f2937;
-    }
-    .controls {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      display: flex;
-      gap: 8px;
-    }
-    .controls button {
-      background: none;
-      border: none;
-      font-size: 1.3em;
-      cursor: pointer;
-      user-select: none;
-      color: #555;
-      transition: color 0.3s ease;
-    }
-    .controls button:hover {
-      color: #0a3d62;
-    }
-    .controls button.fav.active {
-      color: gold;
-      text-shadow: 0 0 5px gold;
-    }
-    .feedback {
-      margin-top: 5px;
-      font-weight: bold;
-      min-height: 18px;
-      font-size: 0.9em;
-      color: #0a3d62;
-    }
-    /* Modal styles */
-    #modalTambah {
-      display: none;
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-    #modalTambah .content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 350px;
-      width: 90%;
-      box-shadow: 2px 2px 12px #00000088;
-      text-align: left;
-    }
-    #modalTambah label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    #modalTambah input {
-      width: 100%;
-      padding: 8px;
-      font-size: 1em;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    #modalTambah button {
-      margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      font-size: 1em;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #modalTambah button:hover {
-      background-color: #2980b9;
-    }
-    #btnTambahKosakata {
-      background-color: #2ecc71;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 1.1em;
-    }
-    #btnTambahKosakata:hover {
-      background-color: #27ae60;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kategori: Di Rumah</title>
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #80daeb;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 {
+    color: white;
+    margin-bottom: 10px;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+  .item {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 2px 2px 6px #00000033;
+    padding: 10px 10px 18px 10px;
+    position: relative;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 2px solid #cbd5e1;
+  }
+  .item:hover {
+    transform: scale(1.03);
+  }
+  .emoji {
+    font-size: 2.5em;
+    line-height: 1;
+  }
+  .item p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #1f2937;
+  }
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    position: relative;
+  }
+  button.fav {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 1.6em;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease, filter 0.3s ease;
+    filter: grayscale(70%);
+    z-index: 10;
+  }
+  button.fav.active {
+    color: #FFD700;
+    filter: none;
+    text-shadow: 0 0 5px #FFD700;
+  }
+  button.mic {
+    background: none;
+    border: none;
+    font-size: 1.3em;
+    cursor: pointer;
+    color: #0a3d62;
+    z-index: 5;
+  }
+  .feedback {
+    margin-top: 4px;
+    font-weight: bold;
+    min-height: 18px;
+    font-size: 0.9em;
+    color: #0a3d62;
+  }
+  /* Mode edit */
+  #modeEditToggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 2em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    user-select: none;
+  }
+  #editPanel {
+    display: none;
+    max-width: 600px;
+    margin: 10px auto;
+    background: #e0f7fa;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 10px #00000022;
+  }
+  #editPanel input[type="text"] {
+    width: calc(100% - 100px);
+    padding: 8px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+  #editPanel button {
+    padding: 8px 15px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: none;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+  }
+  #editPanel button:hover {
+    background: #2980b9;
+  }
+  .delete-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+  }
+</style>
 </head>
 <body>
 
-  <h1>Kategori: Di Rumah</h1>
+<h1>Kategori: Di Rumah</h1>
 
-  <button id="btnTambahKosakata">➕ Tambah Kosakata</button>
+<button id="modeEditToggle" title="Mode Edit ⚙️">⚙️</button>
 
-  <div class="container" id="gridKategori"></div>
+<div class="container" id="gridKategori"></div>
 
-  <div id="modalTambah">
-    <div class="content">
-      <h2>Tambah Kosakata Baru</h2>
-      <label for="inputTeks">Teks/Kalimat:</label>
-      <input type="text" id="inputTeks" placeholder="Contoh: Saya mau makan" />
+<div id="editPanel">
+  <h3>Tambah Kosakata Baru</h3>
+  <input type="text" id="inputTeks" placeholder="Teks/Kalimat, contoh: Saya mau makan" />
+  <input type="text" id="inputEmoji" placeholder="Emoji, contoh: 🍛" maxlength="2" />
+  <button id="btnTambah">Tambah</button>
 
-      <label for="inputEmoji">Emoji:</label>
-      <input type="text" id="inputEmoji" placeholder="Contoh: 🍛" />
+  <h3>Hapus Kosakata</h3>
+  <button id="btnHapus">Hapus yang Dipilih</button>
+</div>
 
-      <button id="btnSimpan">Simpan</button>
-      <button id="btnBatal" style="background:#e74c3c; margin-top:8px;">Batal</button>
-    </div>
-  </div>
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script>
+  const kategoriKey = 'kosakata_lokasi_rumah';
+  let modeEdit = false;
 
-  <script>
-    // Audio files
+  // Kosakata awal default
+  const kosakataDefault = [
+    { teks: 'Saya di rumah', emoji: '🏡' },
+    { teks: 'Saya mau mandi', emoji: '🛀🏻' },
+    { teks: 'Saya mau makan', emoji: '🍛' },
+    { teks: 'Saya mau minum', emoji: '🥛' },
+    { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
+    { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
+    { teks: 'Saya mau pergi', emoji: '🛵' },
+    { teks: 'Saya mau sekolah', emoji: '🎒' },
+    { teks: 'Saya mau solat', emoji: '🕌' },
+    { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
+    { teks: 'Saya mau uang', emoji: '💵' },
+    { teks: 'Saya mau jajan', emoji: '🍩' },
+    { teks: 'Saya mau nonton tv', emoji: '📺' }
+  ];
+
+  // Load kosakata dari localStorage atau pakai default
+  function loadKosakata() {
+    const data = localStorage.getItem(kategoriKey);
+    if (data) {
+      try {
+        return JSON.parse(data);
+      } catch {
+        return kosakataDefault;
+      }
+    } else {
+      return kosakataDefault;
+    }
+  }
+
+  // Simpan kosakata ke localStorage
+  function saveKosakata(arr) {
+    localStorage.setItem(kategoriKey, JSON.stringify(arr));
+  }
+
+  // Load daftar favorit
+  function loadFavorit() {
+    const f = localStorage.getItem('favoritList') || '[]';
+    try {
+      return JSON.parse(f);
+    } catch {
+      return [];
+    }
+  }
+
+  // Simpan favorit
+  function saveFavorit(arr) {
+    localStorage.setItem('favoritList', JSON.stringify(arr));
+  }
+
+  // Toggle favorit
+  function toggleFavorit(teks) {
+    const favorit = loadFavorit();
+    const index = favorit.indexOf(teks);
+    if (index >= 0) favorit.splice(index,1);
+    else favorit.push(teks);
+    saveFavorit(favorit);
+    renderGrid();
+  }
+
+  // Text to speech
+  function bicara(teks) {
+    const voice = "Indonesian Female";
+    responsiveVoice.speak(teks, voice);
+  }
+
+  // Speech recognition latihan bicara
+  function latih(teksTarget, id) {
     const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
     const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
     const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
     const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
-    // Data dasar kategori
-    const dataDasar = [
-      { teks: 'Saya di rumah', emoji: '🏡' },
-      { teks: 'Saya mau mandi', emoji: '🛀🏻' },
-      { teks: 'Saya mau makan', emoji: '🍛' },
-      { teks: 'Saya mau minum', emoji: '🥛' },
-      { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
-      { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
-      { teks: 'Saya mau pergi', emoji: '🛵' },
-      { teks: 'Saya mau sekolah', emoji: '🎒' },
-      { teks: 'Saya mau solat', emoji: '🕌' },
-      { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
-      { teks: 'Saya mau uang', emoji: '💵' },
-      { teks: 'Saya mau jajan', emoji: '🍩' },
-      { teks: 'Saya mau nonton tv', emoji: '📺' }
-    ];
+    soundClickMic.play();
 
-    // Ambil data tambahan dari localStorage
-    let dataTambahan = JSON.parse(localStorage.getItem('kosakata_lokasi_rumah')) || [];
-
-    // Gabungkan data dasar + tambahan
-    let dataKategori = dataDasar.concat(dataTambahan);
-
-    // Fungsi untuk menyimpan data tambahan ke localStorage
-    function simpanDataTambahan() {
-      localStorage.setItem('kosakata_lokasi_rumah', JSON.stringify(dataTambahan));
+    if (!('webkitSpeechRecognition' in window)) {
+      alert('Browser Anda tidak mendukung fitur latihan suara.');
+      return;
     }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'id-ID';
+    recognition.interimResults = false;
 
-    // Load favorit dari localStorage
-    function loadFavorit() {
-      return JSON.parse(localStorage.getItem('favoritList')) || [];
-    }
-    // Simpan favorit ke localStorage
-    function saveFavorit(list) {
-      localStorage.setItem('favoritList', JSON.stringify(list));
-    }
+    recognition.onstart = () => soundRecordStart.play();
 
-    // Toggle favorit
-    function toggleFavorit(teks) {
-      let favoritList = loadFavorit();
-      const idx = favoritList.indexOf(teks);
-      if (idx > -1) {
-        favoritList.splice(idx, 1);
+    recognition.onresult = (event) => {
+      const hasil = event.results[0][0].transcript.toLowerCase();
+      const skor = kemiripan(hasil, teksTarget.toLowerCase());
+      const feedback = document.getElementById("feedback-" + id);
+      if (skor >= 0.8) {
+        feedback.innerText = "✅ Bagus!";
+        feedback.style.color = "green";
+        soundCorrect.play();
       } else {
-        favoritList.push(teks);
+        feedback.innerText = `❌ Coba lagi. Kamu bilang: ${hasil}`;
+        feedback.style.color = "red";
+        soundWrong.play();
       }
-      saveFavorit(favoritList);
-      renderGridKategori();
-    }
+    };
 
-    // Fungsi text to speech
-    function bicara(teks) {
-      const voice = 'Indonesian Female'; // default suara
-      responsiveVoice.speak(teks, voice);
-    }
+    recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+    recognition.start();
+  }
 
-    // Fungsi latihan bicara dengan SpeechRecognition API
-    function latih(teksTarget, id) {
-      if (!('webkitSpeechRecognition' in window)) {
-        alert('Browser Anda tidak mendukung fitur pengenalan suara.');
-        return;
+  // Fungsi kemiripan teks (Levenshtein distance)
+  function kemiripan(a, b) {
+    const jarak = levenshtein(a, b);
+    return 1 - jarak / Math.max(a.length, b.length);
+  }
+
+  function levenshtein(a, b) {
+    const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+    for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+    for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,
+          dp[i][j - 1] + 1,
+          dp[i - 1][j - 1] + cost
+        );
       }
-
-      soundClickMic.play();
-      const recognition = new webkitSpeechRecognition();
-      recognition.lang = 'id-ID';
-      recognition.interimResults = false;
-
-      recognition.onstart = () => soundRecordStart.play();
-
-      recognition.onresult = (event) => {
-        const hasil = event.results[0][0].transcript.toLowerCase();
-        const skor = kemiripan(hasil, teksTarget.toLowerCase());
-        const feedback = document.getElementById("feedback-" + id);
-        if (skor >= 0.8) {
-          feedback.innerText = "✅ Bagus!";
-          feedback.style.color = "green";
-          soundCorrect.play();
-        } else {
-          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
-          feedback.style.color = "red";
-          soundWrong.play();
-        }
-      };
-
-      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
-      recognition.start();
     }
+    return dp[b.length][a.length];
+  }
 
-    // Fungsi menghitung kemiripan string (Levenshtein Distance)
-    function kemiripan(a, b) {
-      const jarak = levenshtein(a, b);
-      return 1 - jarak / Math.max(a.length, b.length);
-    }
+  // Render grid kosakata
+  function renderGrid() {
+    const container = document.getElementById('gridKategori');
+    container.innerHTML = '';
+    const data = loadKosakata();
+    const favorit = loadFavorit();
 
-    function levenshtein(a, b) {
-      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
-      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
-      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
-      for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
-          dp[i][j] = Math.min(
-            dp[i - 1][j] + 1,
-            dp[i][j - 1] + 1,
-            dp[i - 1][j - 1] + cost
-          );
-        }
-      }
-      return dp[b.length][a.length];
-    }
+    data.forEach((item, idx) => {
+      const idTeks = item.teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
-    // Render kotak kosakata
-    function renderGridKategori() {
-      const container = document.getElementById('gridKategori');
-      container.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'item';
 
-      const favoritList = loadFavorit();
-
-      dataKategori.forEach(item => {
-        const teks = item.teks;
-        const emoji = item.emoji || '❓';
-        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        const isFavorit = favoritList.includes(teks);
-
-        const div = document.createElement('div');
-        div.className = 'item';
+      if (modeEdit) {
         div.innerHTML = `
-          <div class="emoji">${emoji}</div>
-          <p>${teks}</p>
+          <input type="checkbox" class="delete-checkbox" data-idx="${idx}" title="Pilih untuk dihapus" />
+          <button class="fav ${favorit.includes(item.teks) ? 'active' : ''}" title="Favorit" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</button>
+          <div class="emoji">${item.emoji || '❓'}</div>
+          <p>${item.teks}</p>
+        `;
+        div.onclick = null; // Non aktif klik bicara di mode edit
+      } else {
+        div.innerHTML = `
+          <button class="fav ${favorit.includes(item.teks) ? 'active' : ''}" title="Favorit" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</button>
+          <div class="emoji">${item.emoji || '❓'}</div>
+          <p>${item.teks}</p>
           <div class="controls">
-            <button class="fav ${isFavorit ? 'active' : ''}" title="${isFavorit ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}" onclick="event.stopPropagation(); toggleFavorit('${teks}')">⭐</button>
-            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${item.teks}', '${idTeks}')">🎤</button>
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
-        div.onclick = () => bicara(teks);
-        container.appendChild(div);
-      });
+        div.onclick = () => bicara(item.teks);
+      }
+
+      container.appendChild(div);
+    });
+  }
+
+  // Toggle mode edit
+  document.getElementById('modeEditToggle').addEventListener('click', () => {
+    modeEdit = !modeEdit;
+    document.getElementById('editPanel').style.display = modeEdit ? 'block' : 'none';
+    renderGrid();
+  });
+
+  // Tambah kosakata baru
+  document.getElementById('btnTambah').addEventListener('click', () => {
+    const teks = document.getElementById('inputTeks').value.trim();
+    const emoji = document.getElementById('inputEmoji').value.trim();
+
+    if (!teks || !emoji) {
+      alert('Mohon isi teks dan emoji!');
+      return;
     }
 
-    // Tampilkan modal tambah kosakata
-    const modal = document.getElementById('modalTambah');
-    const btnTambah = document.getElementById('btnTambahKosakata');
-    const btnSimpan = document.getElementById('btnSimpan');
-    const btnBatal = document.getElementById('btnBatal');
-    const inputTeks = document.getElementById('inputTeks');
-    const inputEmoji = document.getElementById('inputEmoji');
+    const data = loadKosakata();
 
-    btnTambah.onclick = () => {
-      inputTeks.value = '';
-      inputEmoji.value = '';
-      modal.style.display = 'flex';
-      inputTeks.focus();
-    };
+    // Cek duplikat
+    if (data.some(item => item.teks.toLowerCase() === teks.toLowerCase())) {
+      alert('Kosakata sudah ada!');
+      return;
+    }
 
-    btnBatal.onclick = () => {
-      modal.style.display = 'none';
-    };
+    data.push({ teks, emoji });
+    saveKosakata(data);
+    renderGrid();
 
-    btnSimpan.onclick = () => {
-      const teksBaru = inputTeks.value.trim();
-      const emojiBaru = inputEmoji.value.trim();
-      if (!teksBaru || !emojiBaru) {
-        alert('Teks dan emoji harus diisi!');
-        return;
-      }
-      // Tambah ke dataTambahan & dataKategori
-      dataTambahan.push({ teks: teksBaru, emoji: emojiBaru });
-      dataKategori = dataDasar.concat(dataTambahan);
-      simpanDataTambahan();
-      renderGridKategori();
-      modal.style.display = 'none';
-    };
+    document.getElementById('inputTeks').value = '';
+    document.getElementById('inputEmoji').value = '';
+  });
 
-    // Inisialisasi tampilan
-    window.onload = () => {
-      renderGridKategori();
-    };
-  </script>
+  // Hapus kosakata yang dipilih
+  document.getElementById('btnHapus').addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.delete-checkbox:checked');
+    if (checkboxes.length === 0) {
+      alert('Pilih kosakata yang ingin dihapus terlebih dahulu!');
+      return;
+    }
+    if (!confirm('Yakin ingin menghapus kosakata yang dipilih?')) return;
+
+    let data = loadKosakata();
+    const idxToDelete = Array.from(checkboxes).map(cb => Number(cb.dataset.idx));
+
+    // Hapus dari data mulai dari index terbesar supaya tidak salah hapus
+    idxToDelete.sort((a,b) => b - a).forEach(idx => {
+      data.splice(idx, 1);
+    });
+
+    saveKosakata(data);
+    renderGrid();
+  });
+
+  // Inisialisasi halaman
+  renderGrid();
+</script>
 
 </body>
 </html>
