@@ -28,30 +28,43 @@
       border: 1px solid #ccc;
       cursor: pointer;
     }
-    .gear-btn {
-      position: fixed;
+    .gear-container {
+      position: absolute;
       top: 20px;
       right: 20px;
-      font-size: 1.4em;
-      cursor: pointer;
+    }
+    .gear-btn {
+      font-size: 1.5em;
       background: none;
       border: none;
+      cursor: pointer;
     }
-    .gear-panel {
-      display: none;
-      position: fixed;
-      top: 60px;
-      right: 20px;
+    .pengaturan {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 30px;
+      right: 0;
       background: white;
       border: 1px solid #ccc;
       border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .gear-panel textarea {
-      width: 100%;
       padding: 5px;
-      margin-bottom: 10px;
+      z-index: 99;
+    }
+    .pengaturan.hidden {
+      display: none;
+    }
+    .pengaturan button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .pengaturan button:hover {
+      background-color: #2980b9;
     }
     .container {
       display: grid;
@@ -68,7 +81,6 @@
       background-color: #ffffff;
       border: 2px solid #cbd5e1;
       position: relative;
-      transition: transform 0.2s ease;
     }
     .item:hover {
       transform: scale(1.03);
@@ -106,23 +118,20 @@
 <body>
   <h1>Kategori: Di Rumah</h1>
 
+  <div class="gear-container">
+    <button class="gear-btn" onclick="togglePengaturan()">⚙️</button>
+    <div id="menuPengaturan" class="pengaturan hidden">
+      <button onclick="tambahKosakata()">➕ Tambah</button>
+      <button onclick="hapusKosakata()">🗑️ Hapus</button>
+    </div>
+  </div>
+
   <div class="voice-select">
     <label for="voiceSelect">Pilih Suara:</label>
     <select id="voiceSelect">
       <option value="Indonesian Female" selected>Perempuan</option>
       <option value="Indonesian Male">Laki-laki</option>
     </select>
-  </div>
-
-  <button class="gear-btn" onclick="toggleGearPanel()">⚙️</button>
-  <div class="gear-panel" id="gearPanel">
-    <h3>Tambah Kosakata</h3>
-    <input type="text" id="newText" placeholder="Teks" />
-    <input type="text" id="newEmoji" placeholder="Emoji" />
-    <button onclick="tambahKosakata()">Tambah</button>
-    <h3>Hapus Kosakata</h3>
-    <select id="deleteSelect"></select>
-    <button onclick="hapusKosakata()">Hapus</button>
   </div>
 
   <div class="container" id="gridKategori"></div>
@@ -146,19 +155,46 @@
     ];
 
     function loadItems() {
-      const tambahan = JSON.parse(localStorage.getItem(key)) || [];
-      return [...defaultItems, ...tambahan];
+      const saved = JSON.parse(localStorage.getItem(key) || '[]');
+      return [...defaultItems.filter(d => !saved.some(s => s.teks === d.teks)), ...saved];
     }
 
-    function saveItems(newList) {
-      const saved = newList.filter(i => !defaultItems.some(d => d.teks === i.teks));
-      localStorage.setItem(key, JSON.stringify(saved));
+    function saveItems(items) {
+      localStorage.setItem(key, JSON.stringify(items));
     }
 
-    function toggleGearPanel() {
-      const panel = document.getElementById('gearPanel');
-      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-      renderDeleteOptions();
+    let dataKategori = {
+      judul: "Di Rumah",
+      items: loadItems()
+    };
+
+    const favoritList = JSON.parse(localStorage.getItem('favoritList') || '[]');
+
+    function togglePengaturan() {
+      document.getElementById('menuPengaturan').classList.toggle('hidden');
+    }
+
+    function tambahKosakata() {
+      const teks = prompt("Masukkan teks:");
+      const emoji = prompt("Masukkan emoji:");
+      if (teks && emoji) {
+        const newItem = { teks: teks.trim(), emoji: emoji.trim() };
+        dataKategori.items.push(newItem);
+        saveItems(dataKategori.items);
+        renderGridKategori();
+      }
+    }
+
+    function hapusKosakata() {
+      const teks = prompt("Masukkan teks yang ingin dihapus:");
+      const index = dataKategori.items.findIndex(item => item.teks === teks);
+      if (index !== -1) {
+        dataKategori.items.splice(index, 1);
+        saveItems(dataKategori.items);
+        renderGridKategori();
+      } else {
+        alert("Teks tidak ditemukan!");
+      }
     }
 
     function bicara(teks) {
@@ -167,54 +203,20 @@
     }
 
     function toggleFavorit(teks) {
-      let favoritList = JSON.parse(localStorage.getItem('favoritList')) || [];
       const index = favoritList.indexOf(teks);
-      if (index !== -1) favoritList.splice(index, 1);
-      else favoritList.push(teks);
+      if (index !== -1) {
+        favoritList.splice(index, 1);
+      } else {
+        favoritList.push(teks);
+      }
       localStorage.setItem('favoritList', JSON.stringify(favoritList));
       renderGridKategori();
     }
 
-    function tambahKosakata() {
-      const teks = document.getElementById('newText').value.trim();
-      const emoji = document.getElementById('newEmoji').value.trim();
-      if (!teks || !emoji) return alert('Lengkapi teks dan emoji');
-      const current = loadItems();
-      current.push({ teks, emoji });
-      saveItems(current);
-      renderGridKategori();
-      document.getElementById('newText').value = '';
-      document.getElementById('newEmoji').value = '';
-      renderDeleteOptions();
-    }
-
-    function hapusKosakata() {
-      const target = document.getElementById('deleteSelect').value;
-      let current = loadItems().filter(item => item.teks !== target);
-      saveItems(current);
-      renderGridKategori();
-      renderDeleteOptions();
-    }
-
-    function renderDeleteOptions() {
-      const select = document.getElementById('deleteSelect');
-      const items = loadItems();
-      select.innerHTML = '';
-      items.forEach(i => {
-        const opt = document.createElement('option');
-        opt.value = i.teks;
-        opt.textContent = `${i.emoji} ${i.teks}`;
-        select.appendChild(opt);
-      });
-    }
-
     function renderGridKategori() {
       const container = document.getElementById('gridKategori');
-      const data = loadItems();
-      const favoritList = JSON.parse(localStorage.getItem('favoritList')) || [];
       container.innerHTML = '';
-
-      data.forEach(item => {
+      dataKategori.items.forEach(item => {
         const isFavorit = favoritList.includes(item.teks);
         const div = document.createElement('div');
         div.className = 'item';
@@ -231,9 +233,7 @@
       });
     }
 
-    window.onload = () => {
-      renderGridKategori();
-    };
+    window.onload = () => renderGridKategori();
   </script>
 </body>
 </html>
