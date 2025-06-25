@@ -1,118 +1,165 @@
-<!-- Tombol Layanan -->
-<div class="gear-container">
-  <button class="gear-btn" onclick="bukaPanduan()">📖</button>
-</div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panduan & Layanan Mudah Bicara</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fef9ef;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    button#btnPanduan {
+      font-size: 1.5em;
+      cursor: pointer;
+      background: #3498db;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    /* Modal Background */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    /* Modal Box */
+    .modal-box {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      padding: 20px 30px;
+      text-align: left;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    .modal-box h2 {
+      margin-top: 0;
+      color: #3498db;
+      text-align: center;
+    }
+    .modal-box p, .modal-box ol, .modal-box li {
+      font-size: 1em;
+      line-height: 1.5em;
+      color: #333;
+    }
+    .modal-box ol {
+      padding-left: 20px;
+    }
+    .modal-box li {
+      margin-bottom: 8px;
+    }
+    .modal-box .kontak {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f0f8ff;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #0a3d62;
+      text-align: center;
+    }
+    .modal-box .btn-close {
+      display: block;
+      margin: 20px auto 0;
+      padding: 8px 15px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+    .modal-box .btn-copy {
+      cursor: pointer;
+      color: #3498db;
+      text-decoration: underline;
+      margin-left: 8px;
+      font-weight: normal;
+      background: none;
+      border: none;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
 
-<!-- Modal Panduan & Layanan -->
-<div id="modalPanduan" class="modal hidden">
-  <div class="modal-content">
-    <span class="close" onclick="tutupPanduan()">&times;</span>
+  <button id="btnPanduan" title="Panduan & Layanan Mudah Bicara">📖 Panduan & Layanan</button>
 
-    <h2>📖 Panduan Penggunaan <br> <small style="font-size: 0.8em; color: #888;">Mudah Bicara</small></h2>
-    <ol style="line-height: 1.6; padding-left: 20px;">
-      <li><strong>Memilih Kosakata</strong><br>Klik salah satu kartu yang berisi teks dan emoji untuk mengeluarkan suara ucapan.<br>Suara bisa disesuaikan (laki-laki/perempuan) melalui menu pilihan suara di atas grid kosakata.</li>
-      <li><strong>Menandai Kosakata Favorit</strong><br>Klik ikon ⭐ di pojok kiri atas kartu untuk menambahkan ke favorit.<br>Klik lagi untuk menghapus dari favorit.<br>Kosakata favorit bisa dilihat di halaman “Favorit Saya - Semua Kategori”.</li>
-      <li><strong>Latihan Bicara (🎤)</strong><br>Klik ikon 🎤 di setiap kartu untuk melatih pelafalan.<br>Ucapkan sesuai teks yang tertulis, sistem akan memberi umpan balik apakah sudah tepat atau belum.</li>
-      <li><strong>Menambah & Menghapus Kosakata</strong> <em>(opsional, jika tersedia)</em><br>Klik tombol ⚙️ atau 📖 di pojok kanan atas, lalu pilih ➕ Tambah untuk menambahkan kosakata baru (teks dan emoji).<br>Pilih 🗑️ Hapus untuk menghapus kosakata dari kategori.<br>Kosakata hasil tambah/hapus akan tersimpan di browser pengguna (menggunakan localStorage).</li>
-      <li><strong>Suara Ucapan</strong><br>Gunakan pilihan suara di menu dropdown (Indonesian Female atau Male) untuk menyesuaikan suara yang digunakan saat bicara.</li>
-      <li><strong>Kontak & Layanan</strong><br>Klik tombol 📖 untuk melihat menu:<br>❓ <strong>Panduan</strong> (panduan ini)<br>💬 <strong>Kritik & Saran</strong> (terhubung ke email)<br>📧 <strong>Kontak Email</strong> (untuk menyalin alamat email developer)</li>
-    </ol>
+  <div class="modal-bg" id="modalPanduan">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="judulModal">
+      <h2 id="judulModal">Panduan & Layanan Mudah Bicara</h2>
 
-    <hr style="margin: 20px 0;">
+      <ol>
+        <li><strong>Memilih Kosakata</strong><br>
+            Klik kartu yang berisi teks dan emoji untuk mengeluarkan suara ucapan. Suara bisa disesuaikan (laki-laki/perempuan) melalui menu pilihan suara di atas grid kosakata.</li>
+        <li><strong>Menandai Kosakata Favorit</strong><br>
+            Klik ikon ⭐ di pojok kiri atas kartu untuk menambahkan ke favorit. Klik lagi untuk menghapus dari favorit. Kosakata favorit bisa dilihat di halaman “Favorit Saya - Semua Kategori”.</li>
+        <li><strong>Latihan Bicara (🎤)</strong><br>
+            Klik ikon 🎤 di setiap kartu untuk melatih pelafalan. Ucapkan sesuai teks yang tertulis, sistem akan memberi umpan balik apakah sudah tepat atau belum.</li>
+        <li><strong>Menambah & Menghapus Kosakata</strong><br>
+            Klik tombol ⚙️ atau 📖 di pojok kanan atas, lalu pilih ➕ Tambah untuk menambahkan kosakata baru (teks dan emoji). Pilih 🗑️ Hapus untuk menghapus kosakata dari kategori. Kosakata hasil tambah/hapus akan tersimpan di browser pengguna (menggunakan localStorage).</li>
+        <li><strong>Suara Ucapan</strong><br>
+            Gunakan pilihan suara di menu dropdown (Indonesian Female atau Male) untuk menyesuaikan suara yang digunakan saat bicara.</li>
+      </ol>
 
-    <h2>📬 Layanan & Kontak</h2>
-    <p>Kami terbuka untuk masukan Anda. Jika memiliki saran atau kritik, silakan kirimkan melalui email berikut:</p>
-    <p><strong>Email:</strong> <code id="emailKontak">mediakomunikasiAAC@gmail.com</code></p>
-    <button onclick="salinEmail()">📋 Salin Email</button>
-    <button onclick="kirimEmail()">✉️ Kirim Email</button>
+      <div class="kontak">
+        <p>Jika Anda memiliki kritik, saran, atau ingin menghubungi kami, silakan kirim email ke:</p>
+        <p>
+          <code id="emailText">mediakomunikasiAAC@gmail.com</code>
+          <button class="btn-copy" onclick="copyEmail()">Salin Email</button>
+        </p>
+      </div>
+
+      <button class="btn-close" onclick="closeModal()">Tutup</button>
+    </div>
   </div>
-</div>
 
-<!-- CSS Modal -->
-<style>
-  .gear-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-  }
-  .gear-btn {
-    font-size: 1.5em;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  .modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    z-index: 999;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-  .modal.hidden {
-    display: none;
-  }
-  .modal-content {
-    background-color: #fff;
-    padding: 25px 30px;
-    border-radius: 12px;
-    max-width: 700px;
-    width: 92%;
-    text-align: left;
-    position: relative;
-    color: #333;
-    font-size: 1em;
-  }
-  .modal-content h2 {
-    margin-top: 0;
-    color: #0a3d62;
-  }
-  .modal-content ol li {
-    margin-bottom: 16px;
-  }
-  .modal-content .close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 1.5em;
-    cursor: pointer;
-  }
-  .modal-content button {
-    margin-top: 10px;
-    margin-right: 10px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 6px;
-    background-color: #3498db;
-    color: white;
-    cursor: pointer;
-  }
-  .modal-content button:hover {
-    background-color: #2980b9;
-  }
-</style>
+  <script>
+    const btnPanduan = document.getElementById('btnPanduan');
+    const modal = document.getElementById('modalPanduan');
+    const emailText = document.getElementById('emailText');
 
-<!-- Script -->
-<script>
-  function bukaPanduan() {
-    document.getElementById('modalPanduan').classList.remove('hidden');
-  }
-
-  function tutupPanduan() {
-    document.getElementById('modalPanduan').classList.add('hidden');
-  }
-
-  function salinEmail() {
-    const email = "mediakomunikasiAAC@gmail.com";
-    navigator.clipboard.writeText(email).then(() => {
-      alert("Email telah disalin ke clipboard: " + email);
+    btnPanduan.addEventListener('click', () => {
+      modal.style.display = 'flex';
     });
-  }
 
-  function kirimEmail() {
-    window.location.href = "mailto:mediakomunikasiAAC@gmail.com?subject=Kritik dan Saran&body=Halo, saya ingin memberikan masukan...";
-  }
-</script>
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function copyEmail() {
+      navigator.clipboard.writeText(emailText.textContent).then(() => {
+        alert('Email berhasil disalin ke clipboard!');
+      });
+    }
+
+    // Tutup modal jika klik di luar kotak modal
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Tutup modal dengan ESC
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
