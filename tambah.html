@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mode Guru - Tambah Kosakata</title>
   <style>
     body {
@@ -12,7 +11,8 @@
       margin: 0;
       padding: 20px;
       max-width: 600px;
-      margin: auto;
+      margin-left: auto;
+      margin-right: auto;
     }
     h1 {
       text-align: center;
@@ -24,70 +24,113 @@
       margin-bottom: 5px;
       font-weight: bold;
     }
-    input, select {
+    select, input {
       width: 100%;
       padding: 10px;
       font-size: 1em;
       border: 1px solid #ccc;
       border-radius: 8px;
+      box-sizing: border-box;
     }
     button {
       margin-top: 20px;
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 1em;
       background-color: #3498db;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
     }
     button:hover {
       background-color: #2980b9;
     }
+    #previewEmoji {
+      font-size: 3em;
+      margin-top: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+
   <h1>Mode Guru: Tambah Kosakata</h1>
+
   <form id="formTambah" onsubmit="simpanKosakata(event)">
     <label for="kategori">Kategori:</label>
     <select id="kategori" required>
-      <option value="emosi">Emosi</option>
-      <option value="kebutuhan">Kebutuhan Harian</option>
-      <option value="makanan">Makanan & Minuman</option>
-      <option value="salam">Salam</option>
-      <option value="tempat">Tempat</option>
+      <option value="" disabled selected>Pilih kategori</option>
+      <option value="lokasi_sekolah">🏫 Di Sekolah</option>
+      <option value="lokasi_rumah">🏠 Di Rumah</option>
+      <option value="lingkungan">🏕️ Di Lingkungan</option>
+      <option value="tempat_umum">🛒 Di Tempat Umum</option>
+      <option value="kebutuhan">🍽️ Kebutuhan Harian</option>
+      <option value="salam_sosial">👋 Salam & Sosial</option>
+      <option value="emosi_perasaan">😊 Emosi & Perasaan</option>
+      <option value="tempat">🏠 Tempat</option>
+      <option value="makanan_minuman">🍓 Makanan & Minuman</option>
+      <option value="subjek_orang">👧🏻 Subjek & Orang</option>
     </select>
 
     <label for="teks">Teks/Kalimat:</label>
     <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
 
-    <label for="uploadGambar">Upload Gambar:</label>
-    <input type="file" id="uploadGambar" accept="image/*">
-    <br>
-    <img id="previewGambar" style="max-width: 200px; margin-top: 10px;" />
+    <label for="emoji">Emoji / Simbol:</label>
+    <input type="text" id="emoji" placeholder="Masukkan emoji, contoh: 😊" maxlength="2" oninput="updatePreviewEmoji()" />
+
+    <div id="previewEmoji"></div>
 
     <button type="submit">Simpan Kosakata</button>
   </form>
 
   <script>
-    function simpanKosakata(e) {
-      e.preventDefault();
+    function updatePreviewEmoji() {
+      const emojiInput = document.getElementById('emoji').value;
+      document.getElementById('previewEmoji').innerText = emojiInput;
+    }
+
+    function simpanKosakata(event) {
+      event.preventDefault();
+
       const kategori = document.getElementById('kategori').value;
-      const teks = document.getElementById('teks').value;
-      const gambar = document.getElementById('gambar').value;
+      const teks = document.getElementById('teks').value.trim();
+      const emoji = document.getElementById('emoji').value.trim();
 
-      const dataBaru = { teks, gambar };
-      const key = "kosakata_" + kategori;
+      if (!kategori) {
+        alert('Pilih kategori dulu ya.');
+        return;
+      }
+      if (!teks) {
+        alert('Teks/Kalimat harus diisi.');
+        return;
+      }
+      if (!emoji) {
+        alert('Emoji harus diisi.');
+        return;
+      }
 
-      let dataLama = localStorage.getItem(key);
-      let arr = dataLama ? JSON.parse(dataLama) : [];
+      const key = 'kosakata_' + kategori;
+      const dataLama = localStorage.getItem(key);
+      const arr = dataLama ? JSON.parse(dataLama) : [];
 
-      arr.push(dataBaru);
+      // Cek apakah teks sudah ada agar tidak duplikat
+      if (arr.some(item => item.teks.toLowerCase() === teks.toLowerCase())) {
+        alert('Kosakata ini sudah ada di kategori tersebut.');
+        return;
+      }
+
+      arr.push({ teks, emoji });
       localStorage.setItem(key, JSON.stringify(arr));
 
-      alert("Kosakata baru berhasil disimpan!");
+      alert('Kosakata baru berhasil disimpan!');
+
+      // Reset form & preview
       document.getElementById('formTambah').reset();
+      updatePreviewEmoji();
     }
   </script>
+
 </body>
 </html>
