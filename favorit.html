@@ -3,21 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Favorit Saya</title>
+  <title>Favorit Saya - Semua Kategori</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
       background-color: #80daeb;
+      margin: 0;
       padding: 20px;
       text-align: center;
-      color: #1f2937;
     }
-
     h1 {
       color: white;
       margin-bottom: 20px;
     }
-
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -25,9 +24,9 @@
       max-width: 600px;
       margin: 0 auto 40px;
     }
-
     .item {
-      background: white;
+      position: relative;
+      background-color: #ffffff;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
       padding: 10px 10px 36px 10px;
@@ -35,34 +34,27 @@
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
-      color: #1f2937;
-      position: relative;
     }
-
     .item:hover {
       transform: scale(1.03);
     }
-
     .emoji {
       font-size: 2.5em;
       line-height: 1;
     }
-
     .item p {
       margin: 5px 0;
       font-size: 1em;
+      color: #1f2937;
+      font-weight: bold;
     }
-
     .controls {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
+      position: relative;
       display: flex;
-      gap: 10px;
-      z-index: 10;
+      justify-content: flex-end;
+      gap: 8px;
     }
-
-    button.fav {
+    .controls button.fav {
       font-size: 1.6em;
       color: #FFD700;
       background: none;
@@ -70,35 +62,42 @@
       cursor: pointer;
       user-select: none;
       transition: color 0.3s ease, filter 0.3s ease;
+      filter: none;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 10;
     }
-
-    button.mic {
+    .controls button.mic {
       background: none;
       border: none;
       font-size: 1.2em;
       cursor: pointer;
       color: #0a3d62;
-      user-select: none;
+      position: relative;
+      z-index: 5;
     }
-
     .feedback {
       margin-top: 4px;
       font-weight: bold;
       min-height: 18px;
       font-size: 0.9em;
       color: #0a3d62;
+      text-align: center;
+      user-select: none;
     }
   </style>
 </head>
 <body>
 
-  <h1>Favorit Saya</h1>
+  <h1>Favorit Saya - Semua Kategori</h1>
 
   <div class="container" id="gridFavorit"></div>
 
-  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <script>
-    const dataMaster = [
+    // Gabungan data master dari semua kategori
+    const dataMasterGabungan = [
+      // Di Rumah
       { teks: 'Saya di rumah', emoji: '🏡' },
       { teks: 'Saya mau mandi', emoji: '🛀🏻' },
       { teks: 'Saya mau makan', emoji: '🍛' },
@@ -111,17 +110,70 @@
       { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
       { teks: 'Saya mau uang', emoji: '💵' },
       { teks: 'Saya mau jajan', emoji: '🍩' },
-      { teks: 'Saya mau nonton tv', emoji: '📺' }
+      { teks: 'Saya mau nonton tv', emoji: '📺' },
+
+      // Di Sekolah
+      { teks: 'Saya di sekolah', emoji: '🏫' },
+      { teks: 'Saya mau izin ke toilet', emoji: '✋' },
+      { teks: 'Saya mau belajar', emoji: '📖' },
+      { teks: 'Saya mau ke depan', emoji: '🧍‍♂️' },
+      { teks: 'Saya mau menjawab', emoji: '🙋‍♀️' },
+
+      // Di Lingkungan
+      { teks: 'Saya mau ke warung', emoji: '🏪' },
+      { teks: 'Saya mau ke pasar', emoji: '🧺' },
+      { teks: 'Saya mau beli ini', emoji: '💰' },
+      { teks: 'Boleh saya pinjam?', emoji: '🤝' },
+      { teks: 'Ayo bermain bersama', emoji: '🧩' },
+      { teks: 'Saya tunggu di sini', emoji: '🪑' },
+      { teks: 'Ayo jalan-jalan', emoji: '🚶‍♂️' },
+      { teks: 'Boleh saya ikut?', emoji: '🙋‍♀️' },
+      { teks: 'Jangan dorong saya', emoji: '🙅' },
+      { teks: 'Saya tidak suka itu', emoji: '🙁' },
+      { teks: 'Tolong diam', emoji: '🤫' },
+      { teks: 'Ada orang datang', emoji: '🚪' },
+      { teks: 'Ada suara keras', emoji: '🔊' },
+      { teks: 'Jangan berisik', emoji: '🤐' },
+      { teks: 'Boleh duduk di sini?', emoji: '🪑' },
+      { teks: 'Jangan sentuh saya', emoji: '✋' },
+      { teks: 'Saya mau ngobrol', emoji: '🗣️' },
+      { teks: 'Itu punya saya', emoji: '👜' },
+      { teks: 'Ayo salaman', emoji: '🤝' },
+      { teks: 'Mari bantu teman', emoji: '🧑‍🤝‍🧑' },
+
+      // Kebutuhan Harian
+      { teks: 'Saya mau ke toilet', emoji: '🚽' },
+      { teks: 'Saya mau tidur', emoji: '😴' },
+
+      // Makanan
+      { teks: 'Nasi', emoji: '🍚' },
+      { teks: 'Ayam goreng', emoji: '🍗' },
+      { teks: 'Ikan bakar', emoji: '🐟' },
+      { teks: 'Sayur', emoji: '🥗' },
+      { teks: 'Buah', emoji: '🍎' },
+      { teks: 'Roti', emoji: '🍞' },
+      { teks: 'Telur', emoji: '🥚' },
+      { teks: 'Susu', emoji: '🥛' },
+      { teks: 'Es krim', emoji: '🍦' },
+      { teks: 'Kue', emoji: '🍰' },
+      { teks: 'Sate', emoji: '🍢' },
+      { teks: 'Sop', emoji: '🍲' },
+      { teks: 'Mie', emoji: '🍜' },
+      { teks: 'Kopi', emoji: '☕' },
+      { teks: 'Teh', emoji: '🍵' }
     ];
 
+    // Load favorit dari localStorage (array teks)
     function loadFavorit() {
-      return JSON.parse(localStorage.getItem('favoritList') || '[]');
+      return JSON.parse(localStorage.getItem('favoritList')) || [];
     }
 
+    // Simpan favorit ke localStorage
     function saveFavorit(list) {
       localStorage.setItem('favoritList', JSON.stringify(list));
     }
 
+    // Hapus favorit (dari halaman favorit)
     function hapusFavorit(teks) {
       let favoritList = loadFavorit();
       const idx = favoritList.indexOf(teks);
@@ -132,14 +184,73 @@
       }
     }
 
+    // Bicara pakai responsiveVoice
     function bicara(teks) {
-      if(window.responsiveVoice) {
-        responsiveVoice.speak(teks, "Indonesian Female");
-      } else {
-        alert('ResponsiveVoice.js tidak tersedia');
-      }
+      const voice = "Indonesian Female"; // default suara cewek, bisa dikembangkan pilih suara
+      responsiveVoice.speak(teks, voice);
     }
 
+    // Fungsi latih bicara dengan speech recognition
+    function latih(teksTarget, id) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Browser tidak mendukung fitur latihan bicara.");
+        return;
+      }
+      const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+      const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+      const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+      const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+      soundClickMic.play();
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => soundRecordStart.play();
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript.toLowerCase();
+        const skor = kemiripan(hasil, teksTarget.toLowerCase());
+        const feedback = document.getElementById("feedback-" + id);
+        if (skor >= 0.8) {
+          feedback.innerText = "✅ Bagus!";
+          feedback.style.color = "green";
+          soundCorrect.play();
+        } else {
+          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
+          feedback.style.color = "red";
+          soundWrong.play();
+        }
+      };
+
+      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+      recognition.start();
+    }
+
+    // Fungsi kemiripan string (Levenshtein)
+    function kemiripan(a, b) {
+      const jarak = levenshtein(a, b);
+      return 1 - jarak / Math.max(a.length, b.length);
+    }
+
+    function levenshtein(a, b) {
+      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return dp[b.length][a.length];
+    }
+
+    // Render halaman favorit
     function renderFavorit() {
       const container = document.getElementById('gridFavorit');
       container.innerHTML = '';
@@ -147,12 +258,12 @@
       const favoritList = loadFavorit();
 
       if (favoritList.length === 0) {
-        container.innerHTML = '<p style="color:white;">Belum ada kata favorit. Silakan pilih kata favorit di halaman kategori.</p>';
+        container.innerHTML = '<p style="color:white;">Belum ada kata favorit. Silakan pilih kata favorit di kategori.</p>';
         return;
       }
 
       favoritList.forEach(teks => {
-        const dataItem = dataMaster.find(d => d.teks === teks);
+        const dataItem = dataMasterGabungan.find(d => d.teks === teks);
         const emoji = dataItem ? dataItem.emoji : '❓';
         const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
@@ -163,7 +274,7 @@
           <p>${teks}</p>
           <div class="controls">
             <button class="fav" title="Hapus dari Favorit" onclick="event.stopPropagation(); hapusFavorit('${teks}')">⭐</button>
-            <button class="mic" title="Bicara" onclick="event.stopPropagation(); bicara('${teks}')">🎤</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
           </div>
           <p class="feedback" id="feedback-${idTeks}"></p>
         `;
@@ -172,7 +283,9 @@
       });
     }
 
-    window.onload = renderFavorit;
+    window.onload = () => {
+      renderFavorit();
+    };
   </script>
 </body>
 </html>
