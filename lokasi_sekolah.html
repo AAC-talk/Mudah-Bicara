@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kategori: Di Sekolah</title>
+  <title>Di Sekolah</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
@@ -13,35 +13,101 @@
       padding: 20px;
       text-align: center;
     }
-    h1 { color: #333; }
-    .gear-container { position: absolute; top: 20px; right: 20px; }
-    .gear-btn { font-size: 1.5em; background: none; border: none; cursor: pointer; }
-    .pengaturan { display: none; flex-direction: column; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 5px; position: absolute; top: 30px; right: 0; z-index: 99; }
-    .pengaturan.show { display: flex; }
-    .pengaturan button { background-color: #3498db; color: white; border: none; padding: 6px 10px; margin: 4px; border-radius: 6px; cursor: pointer; }
-    .container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; margin: 0 auto 40px; }
-    .item { padding: 10px 10px 40px 10px; background-color: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; box-shadow: 2px 2px 6px #00000033; cursor: pointer; position: relative; }
-    .emoji { font-size: 2.5em; }
-    .item p { margin: 5px 0; font-weight: bold; }
-    .controls { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 10px; }
-    .fav { color: gray; }
-    .fav.active { color: gold; text-shadow: 0 0 3px gold; }
-    .feedback { font-size: 0.9em; font-weight: bold; color: #0a3d62; margin-top: 4px; min-height: 18px; }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .voice-select {
+      margin: 10px auto 20px;
+      max-width: 300px;
+    }
+    .voice-select select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    .item {
+      padding: 10px;
+      box-shadow: 2px 2px 6px #00000033;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      position: relative;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+    .item:hover {
+      transform: scale(1.03);
+    }
+    .emoji {
+      font-size: 2.5em;
+    }
+    .item p {
+      margin: 5px 0;
+      font-size: 1em;
+      font-weight: bold;
+      color: #1f2937;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .controls button {
+      background: none;
+      border: none;
+      font-size: 1.4em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .fav {
+      color: gray;
+      transition: color 0.3s ease;
+    }
+    .fav.active {
+      color: gold;
+      text-shadow: 0 0 3px gold;
+    }
+    .feedback {
+      margin-top: 6px;
+      font-weight: bold;
+      min-height: 18px;
+      font-size: 0.9em;
+      color: #0a3d62;
+      user-select: none;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <h1>Kategori: Di Sekolah</h1>
-  <div class="gear-container">
-    <button class="gear-btn" onclick="togglePengaturan()">⚙️</button>
-    <div id="menuPengaturan" class="pengaturan">
-      <button onclick="tambahKosakata()">➕ Tambah</button>
-      <button onclick="hapusKosakata()">🗑️ Hapus</button>
-    </div>
+
+  <h1>Di Sekolah</h1>
+
+  <div class="voice-select">
+    <label for="voiceSelect">Pilih Suara:</label>
+    <select id="voiceSelect">
+      <option value="Indonesian Female" selected>Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
+    </select>
   </div>
+
   <div class="container" id="gridKategori"></div>
+
   <script>
     const key = 'kosakata_lokasi_sekolah';
-    // Default list teks & emoji
+
     const defaultItems = [
       { teks: 'Saya di sekolah', emoji: '🏫' },
       { teks: 'Saya mau izin ke toilet', emoji: '✋' },
@@ -52,7 +118,14 @@
 
     function loadItems() {
       const saved = JSON.parse(localStorage.getItem(key) || '[]');
-      return [...defaultItems.filter(d => !saved.some(s => s.teks === d.teks)), ...saved];
+      // Gabung defaultItems dengan saved, tapi saved bisa override default kalau ada teks sama
+      const combined = [...defaultItems];
+      saved.forEach(s => {
+        const idx = combined.findIndex(d => d.teks === s.teks);
+        if (idx >= 0) combined[idx] = s;
+        else combined.push(s);
+      });
+      return combined;
     }
 
     function saveItems(items) {
@@ -64,54 +137,42 @@
       items: loadItems()
     };
 
-    const favoritList = JSON.parse(localStorage.getItem('favoritList') || '[]');
+    // Favorit disimpan hanya teksnya
+    let favoritList = JSON.parse(localStorage.getItem('favoritList') || '[]');
 
-    function togglePengaturan() {
-      document.getElementById('menuPengaturan').classList.toggle('show');
-    }
-
-    function tambahKosakata() {
-      const teks = prompt("Masukkan teks:");
-      const emoji = prompt("Masukkan emoji (contoh: 🍕, 🎮, 🧃):");
-      if (!teks || !emoji) return alert("Teks dan emoji wajib diisi!");
-      const newItem = { teks: teks.trim(), emoji: emoji.trim() };
-      if (dataKategori.items.some(item => item.teks === newItem.teks)) {
-        alert("Teks ini sudah ada.");
-        return;
-      }
-      dataKategori.items.push(newItem);
-      saveItems(dataKategori.items);
-      renderGridKategori();
-    }
-
-    function hapusKosakata() {
-      const teks = prompt("Masukkan teks yang ingin dihapus:");
-      const index = dataKategori.items.findIndex(item => item.teks === teks);
-      if (index !== -1) {
-        dataKategori.items.splice(index, 1);
-        saveItems(dataKategori.items);
-        renderGridKategori();
-      } else {
-        alert("Teks tidak ditemukan!");
-      }
-    }
-
-    function bicara(teks) {
-      responsiveVoice.speak(teks, "Indonesian Female");
-    }
-
+    // Fungsi toggle favorit: tambah / hapus di localStorage favoritList
     function toggleFavorit(teks) {
-      const index = favoritList.indexOf(teks);
-      if (index !== -1) favoritList.splice(index, 1);
+      const idx = favoritList.indexOf(teks);
+      if (idx !== -1) favoritList.splice(idx, 1);
       else favoritList.push(teks);
       localStorage.setItem('favoritList', JSON.stringify(favoritList));
       renderGridKategori();
     }
 
+    // Fungsi bicara dengan responsiveVoice
+    function bicara(teks) {
+      const voice = document.getElementById('voiceSelect').value;
+      responsiveVoice.speak(teks, voice);
+    }
+
+    // Fungsi latih bicara dengan speech recognition
     function latih(teksTarget, id) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Browser tidak mendukung fitur latihan bicara.");
+        return;
+      }
+      const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+      const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+      const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+      const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+      soundClickMic.play();
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'id-ID';
       recognition.interimResults = false;
+
+      recognition.onstart = () => soundRecordStart.play();
+
       recognition.onresult = (event) => {
         const hasil = event.results[0][0].transcript.toLowerCase();
         const skor = kemiripan(hasil, teksTarget.toLowerCase());
@@ -119,15 +180,19 @@
         if (skor >= 0.8) {
           feedback.innerText = "✅ Bagus!";
           feedback.style.color = "green";
+          soundCorrect.play();
         } else {
           feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
           feedback.style.color = "red";
+          soundWrong.play();
         }
       };
+
       recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
       recognition.start();
     }
 
+    // Fungsi kemiripan string (Levenshtein)
     function kemiripan(a, b) {
       const jarak = levenshtein(a, b);
       return 1 - jarak / Math.max(a.length, b.length);
@@ -150,29 +215,35 @@
       return dp[b.length][a.length];
     }
 
+    // Render grid kategori
     function renderGridKategori() {
       const container = document.getElementById('gridKategori');
       container.innerHTML = '';
+
       dataKategori.items.forEach(item => {
         const isFavorit = favoritList.includes(item.teks);
-        const id = item.teks.replace(/\s+/g, '-');
+        const idTeks = item.teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
           <div class="emoji">${item.emoji}</div>
           <p>${item.teks}</p>
           <div class="controls">
-            <button class="fav ${isFavorit ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">${isFavorit ? '⭐' : '☆'}</button>
-            <button class="mic" onclick="event.stopPropagation(); latih('${item.teks}', '${id}')">🎤</button>
+            <button class="fav ${isFavorit ? 'active' : ''}" title="Toggle Favorit" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">${isFavorit ? '⭐' : '☆'}</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${item.teks}', '${idTeks}')">🎤</button>
           </div>
-          <p class="feedback" id="feedback-${id}"></p>
+          <p class="feedback" id="feedback-${idTeks}"></p>
         `;
         div.onclick = () => bicara(item.teks);
         container.appendChild(div);
       });
     }
 
-    window.onload = renderGridKategori;
+    window.onload = () => {
+      renderGridKategori();
+    };
   </script>
+
 </body>
 </html>
