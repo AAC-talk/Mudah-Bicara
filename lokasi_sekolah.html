@@ -220,6 +220,19 @@
       return dp[b.length][a.length];
     }
 
+    const tambahan = JSON.parse(localStorage.getItem('kosakata_lokasi_sekolah')) || [];
+
+  const dataKategori = {
+    judul: "Di Sekolah",
+    items: [
+      { teks: 'Saya di sekolah', emoji: '🏫' },
+      { teks: 'Saya mau izin ke toilet', emoji: '✋' },
+      { teks: 'Saya mau belajar', emoji: '📖' },
+      { teks: 'Saya mau ke depan', emoji: '🧍‍♂️' },
+      { teks: 'Saya mau menjawab', emoji: '🙋‍♀️' }
+    ].concat(tambahan)
+  };
+
     function renderGridKategori() {
       document.getElementById('judulKategori').innerText = `Kategori: ${dataKategori.judul}`;
       const container = document.getElementById('gridKategori');
