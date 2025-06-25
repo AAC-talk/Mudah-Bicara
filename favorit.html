@@ -12,10 +12,12 @@
       text-align: center;
       color: #1f2937;
     }
+
     h1 {
       color: white;
       margin-bottom: 20px;
     }
+
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -23,6 +25,7 @@
       max-width: 600px;
       margin: 0 auto 40px;
     }
+
     .item {
       background: white;
       border: 2px solid #cbd5e1;
@@ -35,24 +38,30 @@
       color: #1f2937;
       position: relative;
     }
+
     .item:hover {
       transform: scale(1.03);
     }
+
     .emoji {
       font-size: 2.5em;
       line-height: 1;
     }
+
     .item p {
       margin: 5px 0;
       font-size: 1em;
     }
+
     .controls {
       position: absolute;
-      top: 8px;
-      left: 8px;
+      bottom: 8px;
+      right: 8px;
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      z-index: 10;
     }
+
     button.fav {
       font-size: 1.6em;
       color: #FFD700;
@@ -61,18 +70,17 @@
       cursor: pointer;
       user-select: none;
       transition: color 0.3s ease, filter 0.3s ease;
-      filter: none;
-      z-index: 10;
     }
+
     button.mic {
       background: none;
       border: none;
       font-size: 1.2em;
       cursor: pointer;
       color: #0a3d62;
-      position: relative;
-      z-index: 5;
+      user-select: none;
     }
+
     .feedback {
       margin-top: 4px;
       font-weight: bold;
@@ -146,6 +154,7 @@
       favoritList.forEach(teks => {
         const dataItem = dataMaster.find(d => d.teks === teks);
         const emoji = dataItem ? dataItem.emoji : '❓';
+        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
         const div = document.createElement('div');
         div.className = 'item';
@@ -154,8 +163,9 @@
           <p>${teks}</p>
           <div class="controls">
             <button class="fav" title="Hapus dari Favorit" onclick="event.stopPropagation(); hapusFavorit('${teks}')">⭐</button>
-            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); bicara('${teks}')">🎤</button>
+            <button class="mic" title="Bicara" onclick="event.stopPropagation(); bicara('${teks}')">🎤</button>
           </div>
+          <p class="feedback" id="feedback-${idTeks}"></p>
         `;
         div.onclick = () => bicara(teks);
         container.appendChild(div);
