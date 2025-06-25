@@ -3,163 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panduan & Layanan Mudah Bicara</title>
+  <title>Panduan & Layanan - Aku Bisa Bicara Mudah</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fef9ef;
+      background-color: #f0f4f8;
       margin: 0;
       padding: 20px;
-      text-align: center;
-    }
-    button#btnPanduan {
-      font-size: 1.5em;
-      cursor: pointer;
-      background: #3498db;
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      user-select: none;
-    }
-    /* Modal Background */
-    .modal-bg {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0; top: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    /* Modal Box */
-    .modal-box {
-      background: white;
-      border-radius: 12px;
+      color: #2c3e50;
       max-width: 600px;
-      width: 90%;
-      padding: 20px 30px;
-      text-align: left;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      margin-left: auto;
+      margin-right: auto;
     }
-    .modal-box h2 {
-      margin-top: 0;
-      color: #3498db;
+    h1 {
       text-align: center;
+      margin-bottom: 20px;
     }
-    .modal-box p, .modal-box ol, .modal-box li {
-      font-size: 1em;
-      line-height: 1.5em;
-      color: #333;
+    h2 {
+      margin-top: 30px;
+      color: #27ae60;
     }
-    .modal-box ol {
-      padding-left: 20px;
+    p {
+      line-height: 1.5;
     }
-    .modal-box li {
-      margin-bottom: 8px;
-    }
-    .modal-box .kontak {
-      margin-top: 20px;
-      padding: 12px;
-      background: #f0f8ff;
-      border-radius: 8px;
-      font-weight: bold;
-      color: #0a3d62;
-      text-align: center;
-    }
-    .modal-box .btn-close {
+    label {
       display: block;
-      margin: 20px auto 0;
-      padding: 8px 15px;
-      background: #e74c3c;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #27ae60;
       color: white;
       border: none;
       border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
-      user-select: none;
+      font-size: 1em;
+      transition: background-color 0.3s ease;
     }
-    .modal-box .btn-copy {
-      cursor: pointer;
-      color: #3498db;
-      text-decoration: underline;
-      margin-left: 8px;
-      font-weight: normal;
-      background: none;
-      border: none;
+    button:hover {
+      background-color: #219150;
+    }
+    .info {
+      margin-top: 10px;
       font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
+  <h1>Panduan & Layanan</h1>
 
-  <button id="btnPanduan" title="Panduan & Layanan Mudah Bicara">📖 Panduan & Layanan</button>
+  <section id="panduan">
+    <h2>Panduan Penggunaan</h2>
+    <p>
+      Aplikasi <strong>Aku Bisa Bicara Mudah</strong> membantu anak dengan hambatan komunikasi untuk mengekspresikan diri dengan mudah melalui gambar, suara, dan latihan interaktif.
+    </p>
+    <ul>
+      <li><strong>Pilih Kosakata:</strong> Ketuk kartu dengan teks dan emoji untuk mendengar suara yang sesuai, dengan pilihan suara laki-laki atau perempuan.</li>
+      <li><strong>Favorit:</strong> Tandai kosakata penting dengan ikon ⭐ agar mudah diakses kembali.</li>
+      <li><strong>Latihan Bicara:</strong> Gunakan ikon 🎤 untuk berlatih pengucapan dengan umpan balik otomatis.</li>
+      <li><strong>Tambah & Hapus Kosakata:</strong> Sesuaikan kosakata sesuai kebutuhan lewat menu pengaturan.</li>
+      <li><strong>Pengaturan Suara:</strong> Pilih suara pria atau wanita untuk kenyamanan mendengar.</li>
+    </ul>
+  </section>
 
-  <div class="modal-bg" id="modalPanduan">
-    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="judulModal">
-      <h2 id="judulModal">Panduan & Layanan Mudah Bicara</h2>
+  <section id="layanan">
+    <h2>Kritik & Saran / Kontak</h2>
+    <form id="formKritikSaran" onsubmit="kirimFeedback(event)">
+      <label for="email">Alamat Email Anda (optional):</label>
+      <input type="email" id="email" name="email" placeholder="misal: kamu@email.com" />
 
-      <ol>
-        <li><strong>Memilih Kosakata</strong><br>
-            Klik kartu yang berisi teks dan emoji untuk mengeluarkan suara ucapan. Suara bisa disesuaikan (laki-laki/perempuan) melalui menu pilihan suara di atas grid kosakata.</li>
-        <li><strong>Menandai Kosakata Favorit</strong><br>
-            Klik ikon ⭐ di pojok kiri atas kartu untuk menambahkan ke favorit. Klik lagi untuk menghapus dari favorit. Kosakata favorit bisa dilihat di halaman “Favorit Saya - Semua Kategori”.</li>
-        <li><strong>Latihan Bicara (🎤)</strong><br>
-            Klik ikon 🎤 di setiap kartu untuk melatih pelafalan. Ucapkan sesuai teks yang tertulis, sistem akan memberi umpan balik apakah sudah tepat atau belum.</li>
-        <li><strong>Menambah & Menghapus Kosakata</strong><br>
-            Klik tombol ⚙️ atau 📖 di pojok kanan atas, lalu pilih ➕ Tambah untuk menambahkan kosakata baru (teks dan emoji). Pilih 🗑️ Hapus untuk menghapus kosakata dari kategori. Kosakata hasil tambah/hapus akan tersimpan di browser pengguna (menggunakan localStorage).</li>
-        <li><strong>Suara Ucapan</strong><br>
-            Gunakan pilihan suara di menu dropdown (Indonesian Female atau Male) untuk menyesuaikan suara yang digunakan saat bicara.</li>
-      </ol>
+      <label for="pesan">Kritik dan Saran / Pertanyaan:</label>
+      <textarea id="pesan" name="pesan" required placeholder="Tulis pesanmu di sini..."></textarea>
 
-      <div class="kontak">
-        <p>Jika Anda memiliki kritik, saran, atau ingin menghubungi kami, silakan kirim email ke:</p>
-        <p>
-          <code id="emailText">mediakomunikasiAAC@gmail.com</code>
-          <button class="btn-copy" onclick="copyEmail()">Salin Email</button>
-        </p>
-      </div>
-
-      <button class="btn-close" onclick="closeModal()">Tutup</button>
-    </div>
-  </div>
+      <button type="submit">Kirim</button>
+    </form>
+    <p class="info">
+      Kamu juga bisa mengirim email langsung ke: <a href="mailto:mediakomunikasiAAC@gmail.com">mediakomunikasiAAC@gmail.com</a>
+    </p>
+    <p id="statusPesan" style="color: green; font-weight: bold;"></p>
+  </section>
 
   <script>
-    const btnPanduan = document.getElementById('btnPanduan');
-    const modal = document.getElementById('modalPanduan');
-    const emailText = document.getElementById('emailText');
+    function kirimFeedback(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const pesan = document.getElementById('pesan').value.trim();
 
-    btnPanduan.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
-
-    function closeModal() {
-      modal.style.display = 'none';
-    }
-
-    function copyEmail() {
-      navigator.clipboard.writeText(emailText.textContent).then(() => {
-        alert('Email berhasil disalin ke clipboard!');
-      });
-    }
-
-    // Tutup modal jika klik di luar kotak modal
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
+      if (!pesan) {
+        alert('Mohon isi pesan kritik dan sarannya.');
+        return;
       }
-    });
 
-    // Tutup modal dengan ESC
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
-    });
+      // Karena ini aplikasi client-side, untuk pengiriman email otomatis perlu backend atau
+      // bisa diarahkan ke mailto sebagai fallback:
+      let mailtoLink = `mailto:mediakomunikasiAAC@gmail.com?subject=Kritik%20dan%20Saran%20dari%20${encodeURIComponent(email || 'Pengguna')}&body=${encodeURIComponent(pesan)}`;
+
+      // Buka aplikasi email default pengguna dengan isi pesan
+      window.location.href = mailtoLink;
+
+      // Tampilkan status
+      const status = document.getElementById('statusPesan');
+      status.textContent = 'Terima kasih atas kritik dan sarannya! Email terbuka di aplikasi email Anda.';
+      
+      // Reset form
+      event.target.reset();
+    }
   </script>
 </body>
 </html>
