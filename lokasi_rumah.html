@@ -92,9 +92,11 @@
       text-align: left;
     }
 
+    /* Tambahkan font size lebih besar dan bold */
     .item p.text-teks {
       margin: 0 0 6px 0;
-      font-size: 1em;
+      font-size: 1.2em;
+      font-weight: bold;
       color: #1f2937;
       user-select: text;
     }
@@ -240,7 +242,6 @@
 <script>
   const kategoriKey = 'kosakata_lokasi_rumah';
 
-  // Kosakata default asli
   const kosakataDefault = [
     { teks: 'Saya di rumah', emoji: '🏡' },
     { teks: 'Saya mau mandi', emoji: '🛀🏻' },
@@ -257,7 +258,6 @@
     { teks: 'Saya mau nonton tv', emoji: '📺' }
   ];
 
-  // Load data dari localStorage, jika rusak atau kosong pakai default
   function loadKosakata() {
     const data = localStorage.getItem(kategoriKey);
     if (data) {
@@ -275,12 +275,10 @@
     return kosakataDefault;
   }
 
-  // Simpan ke localStorage
   function saveKosakata(arr) {
     localStorage.setItem(kategoriKey, JSON.stringify(arr));
   }
 
-  // Variabel global state
   let kosakata = loadKosakata();
   let favoritList = JSON.parse(localStorage.getItem('favoritList')) || [];
   let modeEdit = false;
@@ -296,7 +294,6 @@
   const inputTeks = document.getElementById('inputTeks');
   const inputEmoji = document.getElementById('inputEmoji');
 
-  // Suara dan efek suara
   const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
   const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
   const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
@@ -402,7 +399,6 @@
     return dp[b.length][a.length];
   }
 
-  // Toggle mode edit tambah kosakata
   btnEditMode.addEventListener('click', () => {
     modeEdit = !modeEdit;
     modeDelete = false;
@@ -414,7 +410,6 @@
     renderGrid();
   });
 
-  // Toggle mode delete kosakata
   btnDeleteMode.addEventListener('click', () => {
     modeDelete = true;
     modeEdit = false;
@@ -426,7 +421,6 @@
     renderGrid();
   });
 
-  // Exit delete mode tanpa hapus
   btnExitDelete.addEventListener('click', () => {
     modeDelete = false;
     deleteSelected.clear();
@@ -436,7 +430,6 @@
     renderGrid();
   });
 
-  // Hapus kosakata yang dipilih
   btnDeleteSelected.addEventListener('click', () => {
     if (deleteSelected.size === 0) {
       alert("Pilih kosakata yang ingin dihapus dulu ya.");
@@ -444,7 +437,6 @@
     }
     if (!confirm(`Yakin ingin menghapus ${deleteSelected.size} kosakata?`)) return;
 
-    // Urut kebalik supaya index tidak bergeser saat hapus
     const indexes = Array.from(deleteSelected).sort((a, b) => b - a);
     for (const i of indexes) {
       kosakata.splice(i, 1);
@@ -458,7 +450,6 @@
     renderGrid();
   });
 
-  // Handle checkbox pilih kosakata hapus
   container.addEventListener('change', e => {
     if (!modeDelete) return;
     if (e.target.classList.contains('delete-checkbox')) {
@@ -472,7 +463,6 @@
     }
   });
 
-  // Handle submit form tambah kosakata
   formTambahKosakata.addEventListener('submit', e => {
     e.preventDefault();
     const teks = inputTeks.value.trim();
