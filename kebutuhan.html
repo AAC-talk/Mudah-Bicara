@@ -132,4 +132,137 @@
   <script>
     const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
     const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
-    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3_
+    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+    const dataKategori = {
+      judul: "Kebutuhan Harian",
+      items: [
+        { teks: 'Saya di rumah', emoji: '🏡' },
+        { teks: 'Saya mau mandi', emoji: '🛀🏻' },
+        { teks: 'Saya mau makan', emoji: '🍛' },
+        { teks: 'Saya mau minum', emoji: '🥛' },
+        { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
+        { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
+        { teks: 'Saya mau pergi', emoji: '🛵' },
+        { teks: 'Saya mau sekolah', emoji: '🎒' },
+        { teks: 'Saya mau solat', emoji: '🕌' },
+        { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
+        { teks: 'Saya mau uang', emoji: '💵' },
+        { teks: 'Saya mau jajan', emoji: '🍩' },
+        { teks: 'Saya mau nonton tv', emoji: '📺' },
+        { teks: 'Saya mau ke toilet', emoji: '🚽' },
+        { teks: 'Saya mau tidur', emoji: '😴' }
+      ]
+    };
+
+    function loadFavorit() {
+      return JSON.parse(localStorage.getItem('favoritList')) || [];
+    }
+
+    function saveFavorit(list) {
+      localStorage.setItem('favoritList', JSON.stringify(list));
+    }
+
+    function toggleFavorit(teks) {
+      let favoritList = loadFavorit();
+      const idx = favoritList.indexOf(teks);
+      if (idx > -1) {
+        favoritList.splice(idx, 1);
+      } else {
+        favoritList.push(teks);
+      }
+      saveFavorit(favoritList);
+      renderGridKategori();
+    }
+
+    function bicara(teks) {
+      const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
+      responsiveVoice.speak(teks, voice);
+    }
+
+    function latih(teksTarget, id) {
+      soundClickMic.play();
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => soundRecordStart.play();
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript.toLowerCase();
+        const skor = kemiripan(hasil, teksTarget.toLowerCase());
+        const feedback = document.getElementById("feedback-" + id);
+        if (skor >= 0.8) {
+          feedback.innerText = "✅ Bagus!";
+          feedback.style.color = "green";
+          soundCorrect.play();
+        } else {
+          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
+          feedback.style.color = "red";
+          soundWrong.play();
+        }
+      };
+
+      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+      recognition.start();
+    }
+
+    function kemiripan(a, b) {
+      const jarak = levenshtein(a, b);
+      return 1 - jarak / Math.max(a.length, b.length);
+    }
+
+    function levenshtein(a, b) {
+      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return dp[b.length][a.length];
+    }
+
+    function renderGridKategori() {
+      document.getElementById('judulKategori').innerText = `Kategori: ${dataKategori.judul}`;
+      const container = document.getElementById('gridKategori');
+      container.innerHTML = '';
+
+      const favoritList = loadFavorit();
+
+      dataKategori.items.forEach(item => {
+        const teks = item.teks;
+        const emoji = item.emoji || '❓';
+        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const isFavorit = favoritList.includes(teks);
+
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <div class="emoji">${emoji}</div>
+          <p>${teks}</p>
+          <div class="controls">
+            <button class="fav ${isFavorit ? 'active' : ''}" title="${isFavorit ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}" onclick="event.stopPropagation(); toggleFavorit('${teks}')">⭐</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
+          </div>
+          <p class="feedback" id="feedback-${idTeks}"></p>
+        `;
+        div.onclick = () => bicara(teks);
+        container.appendChild(div);
+      });
+    }
+
+    window.onload = () => {
+      renderGridKategori();
+    };
+  </script>
+
+</body>
+</html>
