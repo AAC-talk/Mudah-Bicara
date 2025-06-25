@@ -1,95 +1,80 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mode Guru - Tambah Kosakata</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8fafc;
-      margin: 0;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    label {
-      display: block;
-      margin-top: 20px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <h1>Mode Guru: Tambah Kosakata</h1>
-  <form id="formTambah" onsubmit="simpanKosakata(event)">
-    <label for="kategori">Kategori:</label>
-    <select id="kategori" required>
-      <option value="lokasi_sekolah">🏫 Di Sekolah</option>
-      <option value="lokasi_rumah">🏠 Di Rumah</option>
-      <option value="lingkungan">🏕️ Di Lingkungan</option>
-      <option value="tempatumum">🛒 Di Tempat Umum</option>
-      <option value="kebutuhan">🍽️ Kebutuhan Harian</option>
-      <option value="salam_sosial">👋 Salam & Sosial</option>
-      <option value="emosi_perasaan">😊 Emosi & Perasaan</option>
-      <option value="tempat">📍 Tempat</option>
-      <option value="makanan">🍓 Makanan & Minuman</option>
-      <option value="subjek">👧🏻 Subjek & Orang</option>
-    </select>
+<!-- Tombol Layanan -->
+<div class="layanan-container">
+  <button class="layanan-btn" onclick="toggleLayanan()">📖</button>
+  <div id="menuLayanan" class="layanan hidden">
+    <button onclick="bukaPanduan()">❓ Panduan</button>
+    <button onclick="bukaKritikSaran()">💬 Kritik & Saran</button>
+    <button onclick="salinEmail()">📧 Kontak Email</button>
+  </div>
+</div>
 
-    <label for="teks">Teks/Kalimat:</label>
-    <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
+<style>
+  .layanan-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
 
-    <label for="emoji">Emoji:</label>
-    <input type="text" id="emoji" placeholder="Contoh: 😃" required />
+  .layanan-btn {
+    font-size: 1.6em;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 
-    <button type="submit">Simpan Kosakata</button>
-  </form>
+  .layanan {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 999;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  }
 
-  <script>
-    function simpanKosakata(e) {
-      e.preventDefault();
-      const kategori = document.getElementById('kategori').value;
-      const teks = document.getElementById('teks').value.trim();
-      const emoji = document.getElementById('emoji').value.trim();
+  .layanan.hidden {
+    display: none;
+  }
 
-      const dataBaru = { teks, emoji };
-      const key = "kosakata_" + kategori;
+  .layanan button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    margin: 4px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+  }
 
-      let dataLama = localStorage.getItem(key);
-      let arr = dataLama ? JSON.parse(dataLama) : [];
+  .layanan button:hover {
+    background-color: #2980b9;
+  }
+</style>
 
-      arr.push(dataBaru);
-      localStorage.setItem(key, JSON.stringify(arr));
+<script>
+  function toggleLayanan() {
+    document.getElementById('menuLayanan').classList.toggle('hidden');
+  }
 
-      alert("Kosakata baru berhasil disimpan ke kategori: " + kategori);
-      document.getElementById('formTambah').reset();
-    }
-  </script>
-</body>
-</html>
+  function bukaPanduan() {
+    alert("📖 Panduan Penggunaan:\n\n1. Klik kartu untuk mendengar suara.\n2. Klik ⭐ untuk tambah/hapus favorit.\n3. Klik 🎤 untuk latihan bicara.\n4. Gunakan tombol tambah/hapus jika tersedia.\n\nPastikan koneksi internet aktif.");
+  }
+
+  function bukaKritikSaran() {
+    alert("💬 Kritik & Saran:\nSilakan kirimkan ke:\nmediakomunikasiAAC@gmail.com");
+  }
+
+  function salinEmail() {
+    const email = "mediakomunikasiAAC@gmail.com";
+    navigator.clipboard.writeText(email).then(() => {
+      alert("📧 Email disalin ke clipboard:\n" + email);
+    }).catch(() => {
+      alert("Gagal menyalin email. Silakan salin manual.");
+    });
+  }
+</script>
