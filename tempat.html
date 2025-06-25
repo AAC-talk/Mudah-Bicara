@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kategori: Tempat</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', cursive, arial;
+      background-color: #80daeb; /* medium sky blue */
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .voice-select {
+      margin: 10px auto 20px;
+      max-width: 300px;
+    }
+
+    .voice-select select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .item {
+      padding: 8px 10px 18px 10px;
+      box-shadow: 2px 2px 6px #00000033;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      position: relative;
+    }
+
+    .item p {
+      margin: 4px 0;
+      font-size: 1.2em;
+      color: #1f2937;
+    }
+
+    .emoji {
+      font-size: 4em;
+      line-height: 1;
+    }
+
+    .item:hover {
+      transform: scale(1.03);
+    }
+
+    .controls {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .controls button.fav {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 1.6em;
+      color: #888;
+      background: none;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease, filter 0.3s ease;
+      z-index: 10;
+      filter: grayscale(70%);
+    }
+
+    .controls button.fav.active {
+      color: #FFD700;
+      filter: none;
+      text-shadow: 0 0 5px #FFD700;
+    }
+
+    .controls button.mic {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: #0a3d62;
+      position: relative;
+      z-index: 5;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-weight: bold;
+      min-height: 18px;
+      font-size: 0.9em;
+      color: #0a3d62;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="judulKategori">Kategori: Tempat</h1>
+
+  <div class="voice-select">
+    <label for="voiceSelect" style="color:white">Pilih Suara:</label>
+    <select id="voiceSelect">
+      <option value="Indonesian Female" selected>Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
+    </select>
+  </div>
+
+  <div class="container" id="gridKategori"></div>
+
+  <script>
+    const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+    const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+    const dataKategori = {
+      judul: "Tempat",
+      items: [
+        { teks: 'Rumah', emoji: '🏠' },
+        { teks: 'Sekolah', emoji: '🏫' },
+        { teks: 'Kantor', emoji: '🏢' },
+        { teks: 'Pasar', emoji: '🏬' },
+        { teks: 'Rumah Sakit', emoji: '🏥' },
+        { teks: 'Taman', emoji: '🏞️' },
+        { teks: 'Masjid', emoji: '🕌' },
+        { teks: 'Pantai', emoji: '🏖️' },
+        { teks: 'Stasiun', emoji: '🚉' },
+        { teks: 'Bandara', emoji: '🛫' }
+      ]
+    };
+
+    function loadFavorit() {
+      return JSON.parse(localStorage.getItem('favoritList')) || [];
+    }
+
+    function saveFavorit(list) {
+      localStorage.setItem('favoritList', JSON.stringify(list));
+    }
+
+    function toggleFavorit(teks) {
+      let favoritList = loadFavorit();
+      const idx = favoritList.indexOf(teks);
+      if (idx > -1) {
+        favoritList.splice(idx, 1);
+      } else {
+        favoritList.push(teks);
+      }
+      saveFavorit(favoritList);
+      renderGridKategori();
+    }
+
+    function bicara(teks) {
+      const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
+      responsiveVoice.speak(teks, voice);
+    }
+
+    function latih(teksTarget, id) {
+      soundClickMic.play();
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => soundRecordStart.play();
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript.toLowerCase();
+        const skor = kemiripan(hasil, teksTarget.toLowerCase());
+        const feedback = document.getElementById("feedback-" + id);
+        if (skor >= 0.8) {
+          feedback.innerText = "✅ Bagus!";
+          feedback.style.color = "green";
+          soundCorrect.play();
+        } else {
+          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
+          feedback.style.color = "red";
+          soundWrong.play();
+        }
+      };
+
+      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+      recognition.start();
+    }
+
+    function kemiripan(a, b) {
+      const jarak = levenshtein(a, b);
+      return 1 - jarak / Math.max(a.length, b.length);
+    }
+
+    function levenshtein(a, b) {
+      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return dp[b.length][a.length];
+    }
+
+    function renderGridKategori() {
+      document.getElementById('judulKategori').innerText = `Kategori: ${dataKategori.judul}`;
+      const container = document.getElementById('gridKategori');
+      container.innerHTML = '';
+
+      const favoritList = loadFavorit();
+
+      dataKategori.items.forEach(item => {
+        const teks = item.teks;
+        const emoji = item.emoji || '❓';
+        const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
+        const div = document.createElement('div');
+        div.className = 'item';
+
+        const isFavorit = favoritList.includes(teks);
+
+        div.innerHTML = `
+          <div class="emoji">${emoji}</div>
+          <p>${teks}</p>
+          <div class="controls">
+            <button class="fav ${isFavorit ? 'active' : ''}" title="${isFavorit ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}" onclick="event.stopPropagation(); toggleFavorit('${teks}')">
+              ⭐
+            </button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${teks}', '${idTeks}')">🎤</button>
+          </div>
+          <p class="feedback" id="feedback-${idTeks}"></p>
+        `;
+
+        div.onclick = () => bicara(teks);
+        container.appendChild(div);
+      });
+    }
+
+    window.onload = () => {
+      renderGridKategori();
+    };
+  </script>
+
+</body>
+</html>
