@@ -1,166 +1,246 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kategori: Di Rumah</title>
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #80daeb;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-  }
-  h1 {
-    color: white;
-    margin-bottom: 10px;
-  }
-  .container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    max-width: 600px;
-    margin: 0 auto 40px;
-  }
-  .item {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 2px 2px 6px #00000033;
-    padding: 10px 10px 18px 10px;
-    position: relative;
-    user-select: none;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    border: 2px solid #cbd5e1;
-  }
-  .item:hover {
-    transform: scale(1.03);
-  }
-  .emoji {
-    font-size: 2.5em;
-    line-height: 1;
-  }
-  .item p {
-    margin: 5px 0;
-    font-size: 1em;
-    color: #1f2937;
-  }
-  .controls {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    position: relative;
-  }
-  button.fav {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    font-size: 1.6em;
-    color: #888;
-    background: none;
-    border: none;
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.3s ease, filter 0.3s ease;
-    filter: grayscale(70%);
-    z-index: 10;
-  }
-  button.fav.active {
-    color: #FFD700;
-    filter: none;
-    text-shadow: 0 0 5px #FFD700;
-  }
-  button.mic {
-    background: none;
-    border: none;
-    font-size: 1.3em;
-    cursor: pointer;
-    color: #0a3d62;
-    z-index: 5;
-  }
-  .feedback {
-    margin-top: 4px;
-    font-weight: bold;
-    min-height: 18px;
-    font-size: 0.9em;
-    color: #0a3d62;
-  }
-  /* Mode edit */
-  #modeEditToggle {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    font-size: 2em;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: white;
-    user-select: none;
-  }
-  #editPanel {
-    display: none;
-    max-width: 600px;
-    margin: 10px auto;
-    background: #e0f7fa;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 2px 2px 10px #00000022;
-  }
-  #editPanel input[type="text"] {
-    width: calc(100% - 100px);
-    padding: 8px;
-    font-size: 1em;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-  }
-  #editPanel button {
-    padding: 8px 15px;
-    font-size: 1em;
-    border-radius: 8px;
-    border: none;
-    background: #3498db;
-    color: white;
-    cursor: pointer;
-  }
-  #editPanel button:hover {
-    background: #2980b9;
-  }
-  .delete-checkbox {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 20px;
-    height: 20px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kategori: Di Rumah</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', cursive, arial;
+      background-color: #80daeb;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .voice-select {
+      margin: 10px auto 20px;
+      max-width: 300px;
+    }
+
+    .voice-select select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .topbar {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .topbar button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      color: white;
+      transition: color 0.3s ease;
+    }
+
+    .topbar button:hover {
+      color: #ffd700;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .item {
+      padding: 8px 10px 18px 10px;
+      box-shadow: 2px 2px 6px #00000033;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .item:hover {
+      transform: scale(1.03);
+    }
+
+    .emoji {
+      font-size: 2.5em;
+      line-height: 1;
+      margin-right: 12px;
+    }
+
+    .text-and-feedback {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .item p.text-teks {
+      margin: 0 0 6px 0;
+      font-size: 1em;
+      color: #1f2937;
+      user-select: text;
+    }
+
+    .feedback {
+      margin-top: 0;
+      font-weight: bold;
+      min-height: 18px;
+      font-size: 0.9em;
+      color: #0a3d62;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .controls button {
+      background: none;
+      border: none;
+      font-size: 1.4em;
+      cursor: pointer;
+      color: #555;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    .controls button:hover {
+      color: #0a3d62;
+    }
+
+    .fav.active {
+      color: #FFD700 !important;
+      text-shadow: 0 0 5px #FFD700;
+    }
+
+    /* Mode edit form */
+    #formTambahKosakata {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 2px 2px 8px #00000033;
+      display: none;
+      text-align: left;
+    }
+
+    #formTambahKosakata label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    #formTambahKosakata input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+
+    #formTambahKosakata button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #formTambahKosakata button:hover {
+      background-color: #2980b9;
+    }
+
+    /* Delete selection mode */
+    #deleteModeBar {
+      max-width: 600px;
+      margin: 10px auto 20px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 2px 2px 8px #00000033;
+    }
+
+    #deleteModeBar span {
+      font-weight: bold;
+      color: #b33333;
+    }
+
+    #deleteModeBar button {
+      background-color: #b33333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    #deleteModeBar button:hover {
+      background-color: #802020;
+    }
+
+  </style>
 </head>
 <body>
 
-<h1>Kategori: Di Rumah</h1>
+  <h1 id="judulKategori">Kategori: Di Rumah</h1>
 
-<button id="modeEditToggle" title="Mode Edit ⚙️">⚙️</button>
+  <div class="voice-select">
+    <label for="voiceSelect" style="color:white">Pilih Suara:</label>
+    <select id="voiceSelect">
+      <option value="Indonesian Female" selected>Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
+    </select>
+  </div>
 
-<div class="container" id="gridKategori"></div>
+  <div class="topbar">
+    <button id="btnEditMode" title="Mode Edit ⚙️">⚙️</button>
+    <button id="btnDeleteMode" title="Mode Hapus 🗑️">🗑️</button>
+    <button id="btnExitDelete" title="Keluar Mode Hapus" style="display:none;">❌ Batal</button>
+    <button id="btnDeleteSelected" title="Hapus Kosakata Terpilih" style="display:none;">🗑️ Hapus</button>
+  </div>
 
-<div id="editPanel">
-  <h3>Tambah Kosakata Baru</h3>
-  <input type="text" id="inputTeks" placeholder="Teks/Kalimat, contoh: Saya mau makan" />
-  <input type="text" id="inputEmoji" placeholder="Emoji, contoh: 🍛" maxlength="2" />
-  <button id="btnTambah">Tambah</button>
+  <form id="formTambahKosakata">
+    <label for="inputTeks">Teks/Kalimat:</label>
+    <input type="text" id="inputTeks" placeholder="Contoh: Saya mau mandi" required />
+    <label for="inputEmoji">Emoji:</label>
+    <input type="text" id="inputEmoji" placeholder="Contoh: 🛀🏻" required />
+    <button type="submit">Tambah Kosakata</button>
+  </form>
 
-  <h3>Hapus Kosakata</h3>
-  <button id="btnHapus">Hapus yang Dipilih</button>
-</div>
+  <div class="container" id="gridKategori"></div>
 
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
 <script>
   const kategoriKey = 'kosakata_lokasi_rumah';
-  let modeEdit = false;
 
-  // Kosakata awal default
+  // Kosakata default asli
   const kosakataDefault = [
     { teks: 'Saya di rumah', emoji: '🏡' },
     { teks: 'Saya mau mandi', emoji: '🛀🏻' },
@@ -177,69 +257,104 @@
     { teks: 'Saya mau nonton tv', emoji: '📺' }
   ];
 
-  // Load kosakata dari localStorage atau pakai default
+  // Load data dari localStorage, jika rusak atau kosong pakai default
   function loadKosakata() {
     const data = localStorage.getItem(kategoriKey);
     if (data) {
       try {
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        } else {
+          localStorage.removeItem(kategoriKey);
+        }
       } catch {
-        return kosakataDefault;
+        localStorage.removeItem(kategoriKey);
       }
-    } else {
-      return kosakataDefault;
     }
+    return kosakataDefault;
   }
 
-  // Simpan kosakata ke localStorage
+  // Simpan ke localStorage
   function saveKosakata(arr) {
     localStorage.setItem(kategoriKey, JSON.stringify(arr));
   }
 
-  // Load daftar favorit
-  function loadFavorit() {
-    const f = localStorage.getItem('favoritList') || '[]';
-    try {
-      return JSON.parse(f);
-    } catch {
-      return [];
+  // Variabel global state
+  let kosakata = loadKosakata();
+  let favoritList = JSON.parse(localStorage.getItem('favoritList')) || [];
+  let modeEdit = false;
+  let modeDelete = false;
+  let deleteSelected = new Set();
+
+  const container = document.getElementById('gridKategori');
+  const btnEditMode = document.getElementById('btnEditMode');
+  const btnDeleteMode = document.getElementById('btnDeleteMode');
+  const btnExitDelete = document.getElementById('btnExitDelete');
+  const btnDeleteSelected = document.getElementById('btnDeleteSelected');
+  const formTambahKosakata = document.getElementById('formTambahKosakata');
+  const inputTeks = document.getElementById('inputTeks');
+  const inputEmoji = document.getElementById('inputEmoji');
+
+  // Suara dan efek suara
+  const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+  const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+  const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+  const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+  function renderGrid() {
+    container.innerHTML = '';
+    kosakata.forEach((item, index) => {
+      const idTeks = item.teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+      const isFavorit = favoritList.includes(item.teks);
+      const isSelectedForDelete = deleteSelected.has(index);
+
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.style.borderColor = isSelectedForDelete ? '#b33333' : '#cbd5e1';
+
+      div.innerHTML = `
+        <div class="emoji">${item.emoji || '❓'}</div>
+        <div class="text-and-feedback">
+          <p class="text-teks">${item.teks}</p>
+          <p class="feedback" id="feedback-${idTeks}"></p>
+        </div>
+        <div class="controls">
+          <button class="fav ${isFavorit ? 'active' : ''}" title="${isFavorit ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}" onclick="event.stopPropagation(); toggleFavorit(${index})">⭐</button>
+          ${modeEdit ? '' : `<button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${item.teks}', '${idTeks}')">🎤</button>`}
+          ${modeDelete ? `<input type="checkbox" class="delete-checkbox" data-index="${index}" ${isSelectedForDelete ? 'checked' : ''} title="Pilih untuk dihapus">` : ''}
+        </div>
+      `;
+
+      if (!modeEdit && !modeDelete) {
+        div.onclick = () => bicara(item.teks);
+      } else {
+        div.onclick = null;
+      }
+
+      container.appendChild(div);
+    });
+  }
+
+  function toggleFavorit(index) {
+    const teks = kosakata[index].teks;
+    const idx = favoritList.indexOf(teks);
+    if (idx > -1) {
+      favoritList.splice(idx, 1);
+    } else {
+      favoritList.push(teks);
     }
-  }
-
-  // Simpan favorit
-  function saveFavorit(arr) {
-    localStorage.setItem('favoritList', JSON.stringify(arr));
-  }
-
-  // Toggle favorit
-  function toggleFavorit(teks) {
-    const favorit = loadFavorit();
-    const index = favorit.indexOf(teks);
-    if (index >= 0) favorit.splice(index,1);
-    else favorit.push(teks);
-    saveFavorit(favorit);
+    localStorage.setItem('favoritList', JSON.stringify(favoritList));
     renderGrid();
   }
 
-  // Text to speech
   function bicara(teks) {
-    const voice = "Indonesian Female";
+    const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
     responsiveVoice.speak(teks, voice);
   }
 
-  // Speech recognition latihan bicara
   function latih(teksTarget, id) {
-    const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
-    const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
-    const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
-    const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
-
     soundClickMic.play();
-
-    if (!('webkitSpeechRecognition' in window)) {
-      alert('Browser Anda tidak mendukung fitur latihan suara.');
-      return;
-    }
     const recognition = new webkitSpeechRecognition();
     recognition.lang = 'id-ID';
     recognition.interimResults = false;
@@ -255,7 +370,7 @@
         feedback.style.color = "green";
         soundCorrect.play();
       } else {
-        feedback.innerText = `❌ Coba lagi. Kamu bilang: ${hasil}`;
+        feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
         feedback.style.color = "red";
         soundWrong.play();
       }
@@ -265,7 +380,6 @@
     recognition.start();
   }
 
-  // Fungsi kemiripan teks (Levenshtein distance)
   function kemiripan(a, b) {
     const jarak = levenshtein(a, b);
     return 1 - jarak / Math.max(a.length, b.length);
@@ -288,100 +402,95 @@
     return dp[b.length][a.length];
   }
 
-  // Render grid kosakata
-  function renderGrid() {
-    const container = document.getElementById('gridKategori');
-    container.innerHTML = '';
-    const data = loadKosakata();
-    const favorit = loadFavorit();
-
-    data.forEach((item, idx) => {
-      const idTeks = item.teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-
-      const div = document.createElement('div');
-      div.className = 'item';
-
-      if (modeEdit) {
-        div.innerHTML = `
-          <input type="checkbox" class="delete-checkbox" data-idx="${idx}" title="Pilih untuk dihapus" />
-          <button class="fav ${favorit.includes(item.teks) ? 'active' : ''}" title="Favorit" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</button>
-          <div class="emoji">${item.emoji || '❓'}</div>
-          <p>${item.teks}</p>
-        `;
-        div.onclick = null; // Non aktif klik bicara di mode edit
-      } else {
-        div.innerHTML = `
-          <button class="fav ${favorit.includes(item.teks) ? 'active' : ''}" title="Favorit" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">⭐</button>
-          <div class="emoji">${item.emoji || '❓'}</div>
-          <p>${item.teks}</p>
-          <div class="controls">
-            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${item.teks}', '${idTeks}')">🎤</button>
-          </div>
-          <p class="feedback" id="feedback-${idTeks}"></p>
-        `;
-        div.onclick = () => bicara(item.teks);
-      }
-
-      container.appendChild(div);
-    });
-  }
-
-  // Toggle mode edit
-  document.getElementById('modeEditToggle').addEventListener('click', () => {
+  // Toggle mode edit tambah kosakata
+  btnEditMode.addEventListener('click', () => {
     modeEdit = !modeEdit;
-    document.getElementById('editPanel').style.display = modeEdit ? 'block' : 'none';
+    modeDelete = false;
+    deleteSelected.clear();
+    btnDeleteMode.style.display = 'inline-block';
+    btnExitDelete.style.display = 'none';
+    btnDeleteSelected.style.display = 'none';
+    formTambahKosakata.style.display = modeEdit ? 'block' : 'none';
     renderGrid();
   });
 
-  // Tambah kosakata baru
-  document.getElementById('btnTambah').addEventListener('click', () => {
-    const teks = document.getElementById('inputTeks').value.trim();
-    const emoji = document.getElementById('inputEmoji').value.trim();
-
-    if (!teks || !emoji) {
-      alert('Mohon isi teks dan emoji!');
-      return;
-    }
-
-    const data = loadKosakata();
-
-    // Cek duplikat
-    if (data.some(item => item.teks.toLowerCase() === teks.toLowerCase())) {
-      alert('Kosakata sudah ada!');
-      return;
-    }
-
-    data.push({ teks, emoji });
-    saveKosakata(data);
+  // Toggle mode delete kosakata
+  btnDeleteMode.addEventListener('click', () => {
+    modeDelete = true;
+    modeEdit = false;
+    deleteSelected.clear();
+    formTambahKosakata.style.display = 'none';
+    btnDeleteMode.style.display = 'none';
+    btnExitDelete.style.display = 'inline-block';
+    btnDeleteSelected.style.display = 'inline-block';
     renderGrid();
+  });
 
-    document.getElementById('inputTeks').value = '';
-    document.getElementById('inputEmoji').value = '';
+  // Exit delete mode tanpa hapus
+  btnExitDelete.addEventListener('click', () => {
+    modeDelete = false;
+    deleteSelected.clear();
+    btnDeleteMode.style.display = 'inline-block';
+    btnExitDelete.style.display = 'none';
+    btnDeleteSelected.style.display = 'none';
+    renderGrid();
   });
 
   // Hapus kosakata yang dipilih
-  document.getElementById('btnHapus').addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('.delete-checkbox:checked');
-    if (checkboxes.length === 0) {
-      alert('Pilih kosakata yang ingin dihapus terlebih dahulu!');
+  btnDeleteSelected.addEventListener('click', () => {
+    if (deleteSelected.size === 0) {
+      alert("Pilih kosakata yang ingin dihapus dulu ya.");
       return;
     }
-    if (!confirm('Yakin ingin menghapus kosakata yang dipilih?')) return;
+    if (!confirm(`Yakin ingin menghapus ${deleteSelected.size} kosakata?`)) return;
 
-    let data = loadKosakata();
-    const idxToDelete = Array.from(checkboxes).map(cb => Number(cb.dataset.idx));
-
-    // Hapus dari data mulai dari index terbesar supaya tidak salah hapus
-    idxToDelete.sort((a,b) => b - a).forEach(idx => {
-      data.splice(idx, 1);
-    });
-
-    saveKosakata(data);
+    // Urut kebalik supaya index tidak bergeser saat hapus
+    const indexes = Array.from(deleteSelected).sort((a, b) => b - a);
+    for (const i of indexes) {
+      kosakata.splice(i, 1);
+    }
+    saveKosakata(kosakata);
+    deleteSelected.clear();
+    modeDelete = false;
+    btnDeleteMode.style.display = 'inline-block';
+    btnExitDelete.style.display = 'none';
+    btnDeleteSelected.style.display = 'none';
     renderGrid();
   });
 
-  // Inisialisasi halaman
-  renderGrid();
+  // Handle checkbox pilih kosakata hapus
+  container.addEventListener('change', e => {
+    if (!modeDelete) return;
+    if (e.target.classList.contains('delete-checkbox')) {
+      const idx = Number(e.target.dataset.index);
+      if (e.target.checked) {
+        deleteSelected.add(idx);
+      } else {
+        deleteSelected.delete(idx);
+      }
+      renderGrid();
+    }
+  });
+
+  // Handle submit form tambah kosakata
+  formTambahKosakata.addEventListener('submit', e => {
+    e.preventDefault();
+    const teks = inputTeks.value.trim();
+    const emoji = inputEmoji.value.trim();
+    if (!teks || !emoji) {
+      alert("Teks dan emoji harus diisi.");
+      return;
+    }
+    kosakata.push({ teks, emoji });
+    saveKosakata(kosakata);
+    inputTeks.value = '';
+    inputEmoji.value = '';
+    renderGrid();
+  });
+
+  window.onload = () => {
+    renderGrid();
+  };
 </script>
 
 </body>
