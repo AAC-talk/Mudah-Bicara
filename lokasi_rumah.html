@@ -7,32 +7,16 @@
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
     body {
-      font-family: 'Arial', cursive, arial;
+      font-family: Arial, sans-serif;
       background-color: #80daeb;
       margin: 0;
       padding: 20px;
       text-align: center;
     }
-
     h1 {
-      color: #ffffff;
+      color: white;
       margin-bottom: 10px;
     }
-
-    .voice-select {
-      margin: 10px auto 20px;
-      max-width: 300px;
-    }
-
-    .voice-select select {
-      width: 100%;
-      padding: 8px;
-      font-size: 1em;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -40,128 +24,187 @@
       max-width: 600px;
       margin: 0 auto 40px;
     }
-
     .item {
-      padding: 8px 10px 18px 10px;
-      box-shadow: 2px 2px 6px #00000033;
+      background: white;
+      padding: 10px 15px;
       border-radius: 12px;
+      box-shadow: 2px 2px 6px #00000033;
       cursor: pointer;
+      position: relative;
       user-select: none;
       transition: transform 0.2s ease;
-      background-color: #ffffff;
       border: 2px solid #cbd5e1;
-      position: relative;
     }
-
     .item:hover {
       transform: scale(1.03);
     }
-
     .emoji {
       font-size: 2.5em;
       line-height: 1;
     }
-
     .item p {
-      margin: 5px 0;
-      font-size: 1em;
+      margin: 8px 0 4px;
+      font-size: 1.1em;
       color: #1f2937;
     }
-
     .controls {
-      position: relative;
+      position: absolute;
+      top: 6px;
+      right: 6px;
       display: flex;
-      justify-content: flex-end;
       gap: 8px;
     }
-
-    .controls button.fav {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      font-size: 1.6em;
-      color: #888;
+    .controls button {
       background: none;
       border: none;
+      font-size: 1.3em;
       cursor: pointer;
       user-select: none;
-      transition: color 0.3s ease, filter 0.3s ease;
-      z-index: 10;
-      filter: grayscale(70%);
+      color: #555;
+      transition: color 0.3s ease;
     }
-
-    .controls button.fav.active {
-      color: #FFD700;
-      filter: none;
-      text-shadow: 0 0 5px #FFD700;
-    }
-
-    .controls button.mic {
-      background: none;
-      border: none;
-      font-size: 1.2em;
-      cursor: pointer;
+    .controls button:hover {
       color: #0a3d62;
-      position: relative;
-      z-index: 5;
     }
-
+    .controls button.fav.active {
+      color: gold;
+      text-shadow: 0 0 5px gold;
+    }
     .feedback {
-      margin-top: 4px;
+      margin-top: 5px;
       font-weight: bold;
       min-height: 18px;
       font-size: 0.9em;
       color: #0a3d62;
     }
+    /* Modal styles */
+    #modalTambah {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    #modalTambah .content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 350px;
+      width: 90%;
+      box-shadow: 2px 2px 12px #00000088;
+      text-align: left;
+    }
+    #modalTambah label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    #modalTambah input {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #modalTambah button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 1em;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #modalTambah button:hover {
+      background-color: #2980b9;
+    }
+    #btnTambahKosakata {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1em;
+    }
+    #btnTambahKosakata:hover {
+      background-color: #27ae60;
+    }
   </style>
 </head>
 <body>
 
-  <h1 id="judulKategori">Kategori: Di Rumah</h1>
+  <h1>Kategori: Di Rumah</h1>
 
-  <div class="voice-select">
-    <label for="voiceSelect" style="color:white">Pilih Suara:</label>
-    <select id="voiceSelect">
-      <option value="Indonesian Female" selected>Perempuan</option>
-      <option value="Indonesian Male">Laki-laki</option>
-    </select>
-  </div>
+  <button id="btnTambahKosakata">➕ Tambah Kosakata</button>
 
   <div class="container" id="gridKategori"></div>
 
+  <div id="modalTambah">
+    <div class="content">
+      <h2>Tambah Kosakata Baru</h2>
+      <label for="inputTeks">Teks/Kalimat:</label>
+      <input type="text" id="inputTeks" placeholder="Contoh: Saya mau makan" />
+
+      <label for="inputEmoji">Emoji:</label>
+      <input type="text" id="inputEmoji" placeholder="Contoh: 🍛" />
+
+      <button id="btnSimpan">Simpan</button>
+      <button id="btnBatal" style="background:#e74c3c; margin-top:8px;">Batal</button>
+    </div>
+  </div>
+
   <script>
+    // Audio files
     const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
     const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
     const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
     const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
-    const dataKategori = {
-      judul: "Di Rumah",
-      items: [
-        { teks: 'Saya di rumah', emoji: '🏡' },
-        { teks: 'Saya mau mandi', emoji: '🛀🏻' },
-        { teks: 'Saya mau makan', emoji: '🍛' },
-        { teks: 'Saya mau minum', emoji: '🥛' },
-        { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
-        { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
-        { teks: 'Saya mau pergi', emoji: '🛵' },
-        { teks: 'Saya mau sekolah', emoji: '🎒' },
-        { teks: 'Saya mau solat', emoji: '🕌' },
-        { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
-        { teks: 'Saya mau uang', emoji: '💵' },
-        { teks: 'Saya mau jajan', emoji: '🍩' },
-        { teks: 'Saya mau nonton tv', emoji: '📺' }
-      ]
-    };
+    // Data dasar kategori
+    const dataDasar = [
+      { teks: 'Saya di rumah', emoji: '🏡' },
+      { teks: 'Saya mau mandi', emoji: '🛀🏻' },
+      { teks: 'Saya mau makan', emoji: '🍛' },
+      { teks: 'Saya mau minum', emoji: '🥛' },
+      { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
+      { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
+      { teks: 'Saya mau pergi', emoji: '🛵' },
+      { teks: 'Saya mau sekolah', emoji: '🎒' },
+      { teks: 'Saya mau solat', emoji: '🕌' },
+      { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
+      { teks: 'Saya mau uang', emoji: '💵' },
+      { teks: 'Saya mau jajan', emoji: '🍩' },
+      { teks: 'Saya mau nonton tv', emoji: '📺' }
+    ];
 
+    // Ambil data tambahan dari localStorage
+    let dataTambahan = JSON.parse(localStorage.getItem('kosakata_lokasi_rumah')) || [];
+
+    // Gabungkan data dasar + tambahan
+    let dataKategori = dataDasar.concat(dataTambahan);
+
+    // Fungsi untuk menyimpan data tambahan ke localStorage
+    function simpanDataTambahan() {
+      localStorage.setItem('kosakata_lokasi_rumah', JSON.stringify(dataTambahan));
+    }
+
+    // Load favorit dari localStorage
     function loadFavorit() {
       return JSON.parse(localStorage.getItem('favoritList')) || [];
     }
-
+    // Simpan favorit ke localStorage
     function saveFavorit(list) {
       localStorage.setItem('favoritList', JSON.stringify(list));
     }
 
+    // Toggle favorit
     function toggleFavorit(teks) {
       let favoritList = loadFavorit();
       const idx = favoritList.indexOf(teks);
@@ -174,12 +217,19 @@
       renderGridKategori();
     }
 
+    // Fungsi text to speech
     function bicara(teks) {
-      const voice = document.getElementById('voiceSelect').value || "Indonesian Female";
+      const voice = 'Indonesian Female'; // default suara
       responsiveVoice.speak(teks, voice);
     }
 
+    // Fungsi latihan bicara dengan SpeechRecognition API
     function latih(teksTarget, id) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('Browser Anda tidak mendukung fitur pengenalan suara.');
+        return;
+      }
+
       soundClickMic.play();
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'id-ID';
@@ -206,6 +256,7 @@
       recognition.start();
     }
 
+    // Fungsi menghitung kemiripan string (Levenshtein Distance)
     function kemiripan(a, b) {
       const jarak = levenshtein(a, b);
       return 1 - jarak / Math.max(a.length, b.length);
@@ -228,14 +279,14 @@
       return dp[b.length][a.length];
     }
 
+    // Render kotak kosakata
     function renderGridKategori() {
-      document.getElementById('judulKategori').innerText = `Kategori: ${dataKategori.judul}`;
       const container = document.getElementById('gridKategori');
       container.innerHTML = '';
 
       const favoritList = loadFavorit();
 
-      dataKategori.items.forEach(item => {
+      dataKategori.forEach(item => {
         const teks = item.teks;
         const emoji = item.emoji || '❓';
         const idTeks = teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
@@ -257,6 +308,41 @@
       });
     }
 
+    // Tampilkan modal tambah kosakata
+    const modal = document.getElementById('modalTambah');
+    const btnTambah = document.getElementById('btnTambahKosakata');
+    const btnSimpan = document.getElementById('btnSimpan');
+    const btnBatal = document.getElementById('btnBatal');
+    const inputTeks = document.getElementById('inputTeks');
+    const inputEmoji = document.getElementById('inputEmoji');
+
+    btnTambah.onclick = () => {
+      inputTeks.value = '';
+      inputEmoji.value = '';
+      modal.style.display = 'flex';
+      inputTeks.focus();
+    };
+
+    btnBatal.onclick = () => {
+      modal.style.display = 'none';
+    };
+
+    btnSimpan.onclick = () => {
+      const teksBaru = inputTeks.value.trim();
+      const emojiBaru = inputEmoji.value.trim();
+      if (!teksBaru || !emojiBaru) {
+        alert('Teks dan emoji harus diisi!');
+        return;
+      }
+      // Tambah ke dataTambahan & dataKategori
+      dataTambahan.push({ teks: teksBaru, emoji: emojiBaru });
+      dataKategori = dataDasar.concat(dataTambahan);
+      simpanDataTambahan();
+      renderGridKategori();
+      modal.style.display = 'none';
+    };
+
+    // Inisialisasi tampilan
     window.onload = () => {
       renderGridKategori();
     };
