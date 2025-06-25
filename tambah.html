@@ -1,80 +1,132 @@
 <!-- Tombol Layanan -->
-<div class="layanan-container">
-  <button class="layanan-btn" onclick="toggleLayanan()">📖</button>
-  <div id="menuLayanan" class="layanan hidden">
+<div class="gear-container">
+  <button class="gear-btn" onclick="toggleMenu()">📖</button>
+  <div id="menuLayanan" class="pengaturan hidden">
     <button onclick="bukaPanduan()">❓ Panduan</button>
-    <button onclick="bukaKritikSaran()">💬 Kritik & Saran</button>
+    <button onclick="kirimSaran()">💬 Kritik & Saran</button>
     <button onclick="salinEmail()">📧 Kontak Email</button>
   </div>
 </div>
 
+<!-- Modal Panduan -->
+<div id="modalPanduan" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" onclick="tutupPanduan()">&times;</span>
+    <h2>Panduan Penggunaan</h2>
+    <ol>
+      <li><strong>Memilih Kosakata:</strong> Klik kartu kosakata untuk mendengar suaranya.</li>
+      <li><strong>Menandai Favorit:</strong> Klik ⭐ untuk menambahkan ke daftar favorit.</li>
+      <li><strong>Latihan Bicara 🎤:</strong> Klik ikon mic dan ucapkan kata sesuai teks.</li>
+      <li><strong>Suara:</strong> Pilih suara laki-laki/perempuan di atas.</li>
+      <li><strong>Tambah/Hapus Kosakata:</strong> Bisa dilakukan melalui tombol tambah/hapus (jika tersedia).</li>
+      <li><strong>Kritik & Saran:</strong> Kirimkan ke: <code>mediakomunikasiAAC@gmail.com</code></li>
+    </ol>
+  </div>
+</div>
+
+<!-- CSS (tambahkan di style atau <head>) -->
 <style>
-  .layanan-container {
+  .gear-container {
     position: absolute;
     top: 20px;
     right: 20px;
   }
-
-  .layanan-btn {
-    font-size: 1.6em;
+  .gear-btn {
+    font-size: 1.5em;
     background: none;
     border: none;
     cursor: pointer;
   }
-
-  .layanan {
+  .pengaturan {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 35px;
+    top: 30px;
     right: 0;
     background: white;
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 6px;
-    z-index: 999;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    padding: 5px;
+    z-index: 99;
   }
-
-  .layanan.hidden {
+  .pengaturan.hidden {
     display: none;
   }
-
-  .layanan button {
+  .pengaturan button {
     background-color: #3498db;
     color: white;
     border: none;
     padding: 6px 10px;
-    margin: 4px 0;
+    margin: 4px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.95em;
+  }
+  .pengaturan button:hover {
+    background-color: #2980b9;
   }
 
-  .layanan button:hover {
-    background-color: #2980b9;
+  .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  .modal.hidden {
+    display: none;
+  }
+  .modal-content {
+    background-color: #fff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    text-align: left;
+    position: relative;
+    color: #333;
+    font-size: 1em;
+  }
+  .modal-content h2 {
+    margin-top: 0;
+    color: #0a3d62;
+  }
+  .modal-content ol {
+    padding-left: 20px;
+  }
+  .modal-content .close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
   }
 </style>
 
+<!-- Script -->
 <script>
-  function toggleLayanan() {
+  function toggleMenu() {
     document.getElementById('menuLayanan').classList.toggle('hidden');
   }
 
   function bukaPanduan() {
-    alert("📖 Panduan Penggunaan:\n\n1. Klik kartu untuk mendengar suara.\n2. Klik ⭐ untuk tambah/hapus favorit.\n3. Klik 🎤 untuk latihan bicara.\n4. Gunakan tombol tambah/hapus jika tersedia.\n\nPastikan koneksi internet aktif.");
+    document.getElementById('modalPanduan').classList.remove('hidden');
   }
 
-  function bukaKritikSaran() {
-    alert("💬 Kritik & Saran:\nSilakan kirimkan ke:\nmediakomunikasiAAC@gmail.com");
+  function tutupPanduan() {
+    document.getElementById('modalPanduan').classList.add('hidden');
   }
 
   function salinEmail() {
     const email = "mediakomunikasiAAC@gmail.com";
     navigator.clipboard.writeText(email).then(() => {
-      alert("📧 Email disalin ke clipboard:\n" + email);
-    }).catch(() => {
-      alert("Gagal menyalin email. Silakan salin manual.");
+      alert("Email telah disalin: " + email);
     });
+  }
+
+  function kirimSaran() {
+    window.location.href = "mailto:mediakomunikasiAAC@gmail.com?subject=Kritik dan Saran&body=Halo, saya ingin memberikan masukan...";
   }
 </script>
