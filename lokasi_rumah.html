@@ -28,6 +28,31 @@
       border: 1px solid #ccc;
       cursor: pointer;
     }
+    .gear-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 1.4em;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .gear-panel {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .gear-panel textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
     .container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -89,6 +114,17 @@
     </select>
   </div>
 
+  <button class="gear-btn" onclick="toggleGearPanel()">⚙️</button>
+  <div class="gear-panel" id="gearPanel">
+    <h3>Tambah Kosakata</h3>
+    <input type="text" id="newText" placeholder="Teks" />
+    <input type="text" id="newEmoji" placeholder="Emoji" />
+    <button onclick="tambahKosakata()">Tambah</button>
+    <h3>Hapus Kosakata</h3>
+    <select id="deleteSelect"></select>
+    <button onclick="hapusKosakata()">Hapus</button>
+  </div>
+
   <div class="container" id="gridKategori"></div>
 
   <script>
@@ -111,7 +147,18 @@
 
     function loadItems() {
       const tambahan = JSON.parse(localStorage.getItem(key)) || [];
-      return defaultItems.concat(tambahan);
+      return [...defaultItems, ...tambahan];
+    }
+
+    function saveItems(newList) {
+      const saved = newList.filter(i => !defaultItems.some(d => d.teks === i.teks));
+      localStorage.setItem(key, JSON.stringify(saved));
+    }
+
+    function toggleGearPanel() {
+      const panel = document.getElementById('gearPanel');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+      renderDeleteOptions();
     }
 
     function bicara(teks) {
@@ -122,13 +169,43 @@
     function toggleFavorit(teks) {
       let favoritList = JSON.parse(localStorage.getItem('favoritList')) || [];
       const index = favoritList.indexOf(teks);
-      if (index !== -1) {
-        favoritList.splice(index, 1);
-      } else {
-        favoritList.push(teks);
-      }
+      if (index !== -1) favoritList.splice(index, 1);
+      else favoritList.push(teks);
       localStorage.setItem('favoritList', JSON.stringify(favoritList));
       renderGridKategori();
+    }
+
+    function tambahKosakata() {
+      const teks = document.getElementById('newText').value.trim();
+      const emoji = document.getElementById('newEmoji').value.trim();
+      if (!teks || !emoji) return alert('Lengkapi teks dan emoji');
+      const current = loadItems();
+      current.push({ teks, emoji });
+      saveItems(current);
+      renderGridKategori();
+      document.getElementById('newText').value = '';
+      document.getElementById('newEmoji').value = '';
+      renderDeleteOptions();
+    }
+
+    function hapusKosakata() {
+      const target = document.getElementById('deleteSelect').value;
+      let current = loadItems().filter(item => item.teks !== target);
+      saveItems(current);
+      renderGridKategori();
+      renderDeleteOptions();
+    }
+
+    function renderDeleteOptions() {
+      const select = document.getElementById('deleteSelect');
+      const items = loadItems();
+      select.innerHTML = '';
+      items.forEach(i => {
+        const opt = document.createElement('option');
+        opt.value = i.teks;
+        opt.textContent = `${i.emoji} ${i.teks}`;
+        select.appendChild(opt);
+      });
     }
 
     function renderGridKategori() {
