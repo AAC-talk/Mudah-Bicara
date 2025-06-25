@@ -7,7 +7,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f1f5f9;
+      background-color: #f8fafc;
+      margin: 0;
       padding: 20px;
       max-width: 600px;
       margin: auto;
@@ -45,51 +46,50 @@
   </style>
 </head>
 <body>
-
   <h1>Mode Guru: Tambah Kosakata</h1>
-
-  <form id="formTambah">
+  <form id="formTambah" onsubmit="simpanKosakata(event)">
     <label for="kategori">Kategori:</label>
     <select id="kategori" required>
-      <option value="lokasi_rumah">🏠 Di Rumah</option>
       <option value="lokasi_sekolah">🏫 Di Sekolah</option>
+      <option value="lokasi_rumah">🏠 Di Rumah</option>
       <option value="lingkungan">🏕️ Di Lingkungan</option>
       <option value="tempatumum">🛒 Di Tempat Umum</option>
       <option value="kebutuhan">🍽️ Kebutuhan Harian</option>
       <option value="salam_sosial">👋 Salam & Sosial</option>
-      <option value="emosi_perasaan">🥺 Emosi & Perasaan</option>
-      <option value="tempat">🏠 Tempat</option>
+      <option value="emosi_perasaan">😊 Emosi & Perasaan</option>
+      <option value="tempat">📍 Tempat</option>
       <option value="makanan">🍓 Makanan & Minuman</option>
       <option value="subjek">👧🏻 Subjek & Orang</option>
     </select>
 
     <label for="teks">Teks/Kalimat:</label>
-    <input type="text" id="teks" placeholder="Contoh: Saya lapar" required />
+    <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
 
     <label for="emoji">Emoji:</label>
-    <input type="text" id="emoji" placeholder="Contoh: 🤤" required />
+    <input type="text" id="emoji" placeholder="Contoh: 😃" required />
 
     <button type="submit">Simpan Kosakata</button>
   </form>
 
   <script>
-    document.getElementById('formTambah').addEventListener('submit', function(e) {
+    function simpanKosakata(e) {
       e.preventDefault();
       const kategori = document.getElementById('kategori').value;
       const teks = document.getElementById('teks').value.trim();
       const emoji = document.getElementById('emoji').value.trim();
 
-      if (!teks || !emoji) return alert('Semua kolom wajib diisi.');
+      const dataBaru = { teks, emoji };
+      const key = "kosakata_" + kategori;
 
-      const key = 'kosakata_' + kategori;
-      const dataLama = JSON.parse(localStorage.getItem(key)) || [];
-      dataLama.push({ teks, emoji });
-      localStorage.setItem(key, JSON.stringify(dataLama));
+      let dataLama = localStorage.getItem(key);
+      let arr = dataLama ? JSON.parse(dataLama) : [];
 
-      alert('✅ Kosakata berhasil ditambahkan!');
+      arr.push(dataBaru);
+      localStorage.setItem(key, JSON.stringify(arr));
+
+      alert("Kosakata baru berhasil disimpan ke kategori: " + kategori);
       document.getElementById('formTambah').reset();
-    });
+    }
   </script>
-
 </body>
 </html>
