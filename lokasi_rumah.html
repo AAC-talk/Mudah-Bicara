@@ -137,23 +137,35 @@
   <div class="container" id="gridKategori"></div>
 
   <script>
-    const dataKategori = {
+    const key = 'kosakata_lokasi_rumah';
+    const defaultItems = [
+      { teks: 'Saya di rumah', emoji: '🏡' },
+      { teks: 'Saya mau mandi', emoji: '🛀🏻' },
+      { teks: 'Saya mau makan', emoji: '🍛' },
+      { teks: 'Saya mau minum', emoji: '🥛' },
+      { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
+      { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
+      { teks: 'Saya mau pergi', emoji: '🛵' },
+      { teks: 'Saya mau sekolah', emoji: '🎒' },
+      { teks: 'Saya mau solat', emoji: '🕌' },
+      { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
+      { teks: 'Saya mau uang', emoji: '💵' },
+      { teks: 'Saya mau jajan', emoji: '🍩' },
+      { teks: 'Saya mau nonton tv', emoji: '📺' }
+    ];
+
+    function loadItems() {
+      const saved = JSON.parse(localStorage.getItem(key) || '[]');
+      return [...defaultItems.filter(d => !saved.some(s => s.teks === d.teks)), ...saved];
+    }
+
+    function saveItems(items) {
+      localStorage.setItem(key, JSON.stringify(items));
+    }
+
+    let dataKategori = {
       judul: "Di Rumah",
-      items: [
-        { teks: 'Saya di rumah', emoji: '🏡' },
-        { teks: 'Saya mau mandi', emoji: '🛀🏻' },
-        { teks: 'Saya mau makan', emoji: '🍛' },
-        { teks: 'Saya mau minum', emoji: '🥛' },
-        { teks: 'Saya mau main', emoji: '🤹🏻‍♀️' },
-        { teks: 'Saya mau ikut', emoji: '🙋🏻‍♂️' },
-        { teks: 'Saya mau pergi', emoji: '🛵' },
-        { teks: 'Saya mau sekolah', emoji: '🎒' },
-        { teks: 'Saya mau solat', emoji: '🕌' },
-        { teks: 'Saya mau mengaji', emoji: '🧕🏻' },
-        { teks: 'Saya mau uang', emoji: '💵' },
-        { teks: 'Saya mau jajan', emoji: '🍩' },
-        { teks: 'Saya mau nonton tv', emoji: '📺' }
-      ]
+      items: loadItems()
     };
 
     const favoritList = JSON.parse(localStorage.getItem('favoritList') || '[]');
@@ -166,7 +178,9 @@
       const teks = prompt("Masukkan teks:");
       const emoji = prompt("Masukkan emoji:");
       if (teks && emoji) {
-        dataKategori.items.push({ teks: teks.trim(), emoji: emoji.trim() });
+        const newItem = { teks: teks.trim(), emoji: emoji.trim() };
+        dataKategori.items.push(newItem);
+        saveItems(dataKategori.items);
         renderGridKategori();
       }
     }
@@ -176,6 +190,7 @@
       const index = dataKategori.items.findIndex(item => item.teks === teks);
       if (index !== -1) {
         dataKategori.items.splice(index, 1);
+        saveItems(dataKategori.items);
         renderGridKategori();
       } else {
         alert("Teks tidak ditemukan!");
