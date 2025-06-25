@@ -24,113 +24,193 @@
       margin-bottom: 5px;
       font-weight: bold;
     }
-    select, input {
+    input, select {
       width: 100%;
       padding: 10px;
       font-size: 1em;
       border: 1px solid #ccc;
       border-radius: 8px;
-      box-sizing: border-box;
+    }
+    #previewEmotikon {
+      font-size: 3em;
+      margin-top: 10px;
+      text-align: center;
     }
     button {
       margin-top: 20px;
-      padding: 12px 20px;
+      padding: 10px 20px;
       font-size: 1em;
       background-color: #3498db;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s ease;
     }
     button:hover {
       background-color: #2980b9;
     }
-    #previewEmoji {
-      font-size: 3em;
-      margin-top: 10px;
+    #listKosakata {
+      margin-top: 30px;
+    }
+    #listKosakata h2 {
       text-align: center;
+      color: #2c3e50;
+    }
+    #listKosakata ul {
+      list-style: none;
+      padding: 0;
+    }
+    #listKosakata li {
+      background: #e2e8f0;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 1.2em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #listKosakata li span.emotikon {
+      margin-right: 10px;
+    }
+    #listKosakata li button {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    #listKosakata li button:hover {
+      background-color: #c0392b;
     }
   </style>
 </head>
 <body>
-
   <h1>Mode Guru: Tambah Kosakata</h1>
-
   <form id="formTambah" onsubmit="simpanKosakata(event)">
     <label for="kategori">Kategori:</label>
     <select id="kategori" required>
-      <option value="" disabled selected>Pilih kategori</option>
-      <option value="lokasi_sekolah">🏫 Di Sekolah</option>
-      <option value="lokasi_rumah">🏠 Di Rumah</option>
-      <option value="lingkungan">🏕️ Di Lingkungan</option>
-      <option value="tempat_umum">🛒 Di Tempat Umum</option>
-      <option value="kebutuhan">🍽️ Kebutuhan Harian</option>
-      <option value="salam_sosial">👋 Salam & Sosial</option>
-      <option value="emosi_perasaan">😊 Emosi & Perasaan</option>
-      <option value="tempat">🏠 Tempat</option>
-      <option value="makanan_minuman">🍓 Makanan & Minuman</option>
-      <option value="subjek_orang">👧🏻 Subjek & Orang</option>
+      <option value="">-- Pilih Kategori --</option>
+      <option value="emosi">Emosi & Perasaan</option>
+      <option value="kebutuhan">Kebutuhan Harian</option>
+      <option value="makanan">Makanan & Minuman</option>
+      <option value="salam">Salam & Sosial</option>
+      <option value="tempat">Tempat</option>
+      <option value="lokasi_rumah">Di Rumah</option>
+      <option value="lokasi_sekolah">Di Sekolah</option>
+      <option value="lingkungan">Di Lingkungan</option>
+      <option value="tempatumum">Di Tempat Umum</option>
+      <option value="subjek">Subjek & Orang</option>
     </select>
 
     <label for="teks">Teks/Kalimat:</label>
     <input type="text" id="teks" placeholder="Contoh: Saya senang" required />
 
-    <label for="emoji">Emoji / Simbol:</label>
-    <input type="text" id="emoji" placeholder="Masukkan emoji, contoh: 😊" maxlength="2" oninput="updatePreviewEmoji()" />
-
-    <div id="previewEmoji"></div>
+    <label for="emotikon">Emotikon (gunakan emoji):</label>
+    <input type="text" id="emotikon" placeholder="Contoh: 😃" maxlength="2" required />
+    <div id="previewEmotikon"></div>
 
     <button type="submit">Simpan Kosakata</button>
   </form>
 
-  <script>
-    function updatePreviewEmoji() {
-      const emojiInput = document.getElementById('emoji').value;
-      document.getElementById('previewEmoji').innerText = emojiInput;
-    }
+  <div id="listKosakata">
+    <h2>Daftar Kosakata</h2>
+    <ul id="daftar"></ul>
+  </div>
 
-    function simpanKosakata(event) {
-      event.preventDefault();
+  <script>
+    // Preview emotikon saat ketik
+    const inputEmotikon = document.getElementById('emotikon');
+    const preview = document.getElementById('previewEmotikon');
+    inputEmotikon.addEventListener('input', () => {
+      preview.textContent = inputEmotikon.value;
+    });
+
+    // Simpan kosakata ke localStorage
+    function simpanKosakata(e) {
+      e.preventDefault();
 
       const kategori = document.getElementById('kategori').value;
       const teks = document.getElementById('teks').value.trim();
-      const emoji = document.getElementById('emoji').value.trim();
+      const emotikon = document.getElementById('emotikon').value.trim();
 
       if (!kategori) {
-        alert('Pilih kategori dulu ya.');
+        alert('Pilih kategori terlebih dahulu.');
         return;
       }
       if (!teks) {
-        alert('Teks/Kalimat harus diisi.');
+        alert('Teks tidak boleh kosong.');
         return;
       }
-      if (!emoji) {
-        alert('Emoji harus diisi.');
+      if (!emotikon) {
+        alert('Masukkan emotikon (emoji).');
         return;
       }
 
+      // Ambil data lama dari localStorage
       const key = 'kosakata_' + kategori;
-      const dataLama = localStorage.getItem(key);
-      const arr = dataLama ? JSON.parse(dataLama) : [];
+      let arr = JSON.parse(localStorage.getItem(key)) || [];
 
-      // Cek apakah teks sudah ada agar tidak duplikat
-      if (arr.some(item => item.teks.toLowerCase() === teks.toLowerCase())) {
-        alert('Kosakata ini sudah ada di kategori tersebut.');
+      // Cek duplikat teks di kategori
+      if(arr.some(item => item.teks.toLowerCase() === teks.toLowerCase())) {
+        alert('Teks ini sudah ada di kategori tersebut.');
         return;
       }
 
-      arr.push({ teks, emoji });
+      // Tambahkan data baru
+      arr.push({ teks, emoji: emotikon });
+
+      // Simpan ulang ke localStorage
       localStorage.setItem(key, JSON.stringify(arr));
 
       alert('Kosakata baru berhasil disimpan!');
 
-      // Reset form & preview
+      // Reset form dan preview
       document.getElementById('formTambah').reset();
-      updatePreviewEmoji();
-    }
-  </script>
+      preview.textContent = '';
 
+      // Tampilkan ulang daftar kosakata kategori yang dipilih
+      tampilkanKosakata(kategori);
+    }
+
+    // Tampilkan kosakata yang disimpan per kategori
+    function tampilkanKosakata(kategori) {
+      const key = 'kosakata_' + kategori;
+      const arr = JSON.parse(localStorage.getItem(key)) || [];
+      const daftar = document.getElementById('daftar');
+      daftar.innerHTML = '';
+
+      if(arr.length === 0) {
+        daftar.innerHTML = '<li><i>Belum ada kosakata di kategori ini.</i></li>';
+        return;
+      }
+
+      arr.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="emotikon">${item.emoji}</span> ${item.teks} <button onclick="hapusKosakata('${kategori}', ${index})">Hapus</button>`;
+        daftar.appendChild(li);
+      });
+    }
+
+    // Hapus kosakata dari localStorage dan update list
+    function hapusKosakata(kategori, index) {
+      const key = 'kosakata_' + kategori;
+      let arr = JSON.parse(localStorage.getItem(key)) || [];
+      arr.splice(index, 1);
+      localStorage.setItem(key, JSON.stringify(arr));
+      tampilkanKosakata(kategori);
+    }
+
+    // Jika pilih kategori baru, tampilkan daftar kosakata kategori tersebut
+    document.getElementById('kategori').addEventListener('change', (e) => {
+      tampilkanKosakata(e.target.value);
+    });
+
+    // Saat halaman load, kosongkan daftar
+    window.onload = () => {
+      document.getElementById('daftar').innerHTML = '<li><i>Pilih kategori untuk lihat kosakata.</i></li>';
+    };
+  </script>
 </body>
 </html>
