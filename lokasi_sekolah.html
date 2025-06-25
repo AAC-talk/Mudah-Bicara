@@ -135,6 +135,9 @@
     const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
     const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
 
+    // AMBIL DATA TAMBAHAN DARI LOCAL STORAGE
+    const tambahan = JSON.parse(localStorage.getItem('kosakata_lokasi_sekolah')) || [];
+
     const dataKategori = {
       judul: "Di Sekolah",
       items: [
@@ -143,7 +146,7 @@
         { teks: 'Saya mau belajar', emoji: '📖' },
         { teks: 'Saya mau ke depan', emoji: '🧍‍♂️' },
         { teks: 'Saya mau menjawab', emoji: '🙋‍♀️' }
-      ]
+      ].concat(tambahan)
     };
 
     function loadFavorit() {
@@ -219,8 +222,6 @@
       }
       return dp[b.length][a.length];
     }
-
-    const tambahan = JSON.parse(localStorage.getItem('kosakata_lokasi_sekolah')) || [];
 
     function renderGridKategori() {
       document.getElementById('judulKategori').innerText = `Kategori: ${dataKategori.judul}`;
