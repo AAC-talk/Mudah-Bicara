@@ -95,7 +95,7 @@
   <div class="container" id="gridFavorit"></div>
 
   <script>
-    // Gabungan data master dari semua kategori
+    // Gabungan data master dari semua kategori (baru + lama)
     const dataMasterGabungan = [
       // Di Rumah
       { teks: 'Saya di rumah', emoji: '🏡' },
@@ -141,10 +141,6 @@
       { teks: 'Ayo salaman', emoji: '🤝' },
       { teks: 'Mari bantu teman', emoji: '🧑‍🤝‍🧑' },
 
-      // Kebutuhan Harian
-      { teks: 'Saya mau ke toilet', emoji: '🚽' },
-      { teks: 'Saya mau tidur', emoji: '😴' },
-
       // Makanan
       { teks: 'Nasi', emoji: '🍚' },
       { teks: 'Ayam goreng', emoji: '🍗' },
@@ -160,7 +156,102 @@
       { teks: 'Sop', emoji: '🍲' },
       { teks: 'Mie', emoji: '🍜' },
       { teks: 'Kopi', emoji: '☕' },
-      { teks: 'Teh', emoji: '🍵' }
+      { teks: 'Teh', emoji: '🍵' },
+
+      // Tempat
+      { teks: 'Rumah', emoji: '🏠' },
+      { teks: 'Sekolah', emoji: '🏫' },
+      { teks: 'Kantor', emoji: '🏢' },
+      { teks: 'Pasar', emoji: '🏬' },
+      { teks: 'Rumah Sakit', emoji: '🏥' },
+      { teks: 'Taman', emoji: '🏞️' },
+      { teks: 'Masjid', emoji: '🕌' },
+      { teks: 'Pantai', emoji: '🏖️' },
+      { teks: 'Stasiun', emoji: '🚉' },
+      { teks: 'Bandara', emoji: '🛫' },
+
+      // Orang & Subjek
+      { teks: 'Ayah', emoji: '👨‍🦰' },
+      { teks: 'Ibu', emoji: '👩‍🦰' },
+      { teks: 'Kakak laki-laki', emoji: '👦🏻' },
+      { teks: 'Kakak perempuan', emoji: '👧🏻' },
+      { teks: 'Adik laki-laki', emoji: '👶🏻' },
+      { teks: 'Adik perempuan', emoji: '👶🏻' },
+      { teks: 'Kakek', emoji: '👴🏻' },
+      { teks: 'Nenek', emoji: '👵🏻' },
+      { teks: 'Guru', emoji: '🧑🏻‍🏫' },
+      { teks: 'Teman', emoji: '🧒🏻' },
+      { teks: 'Dokter', emoji: '🧑🏻‍⚕️' },
+      { teks: 'Saya', emoji: '🧍🏻' },
+      { teks: 'Kamu', emoji: '🫵🏻' },
+      { teks: 'Orang lain', emoji: '🧑🏻‍🤝‍🧑🏻' },
+      { teks: 'Om', emoji: '🧔🏻' },
+      { teks: 'Tante', emoji: '👩🏻' },
+      { teks: 'Sepupu', emoji: '👦🏻' },
+      { teks: 'Tetangga', emoji: '🏘️' },
+      { teks: 'Orang baik', emoji: '😊' },
+      { teks: 'Orang jahat', emoji: '😠' },
+      { teks: 'Laki-laki', emoji: '👨🏻' },
+      { teks: 'Perempuan', emoji: '👩🏻' },
+      { teks: 'Anak-anak', emoji: '🧒🏻' },
+      { teks: 'Orang dewasa', emoji: '🧑🏻' },
+      { teks: 'Orang tua', emoji: '👵🏻👴🏻' },
+
+      // Tempat Umum
+      { teks: 'Saya mau beli', emoji: '🛍️' },
+      { teks: 'Berapa harganya?', emoji: '💰' },
+      { teks: 'Saya mau bayar', emoji: '💵' },
+      { teks: 'Saya mau ke toilet', emoji: '🚽' },
+      { teks: 'Tolong bantu saya', emoji: '🙏' },
+      { teks: 'Saya tersesat', emoji: '😢' },
+      { teks: 'Saya mencari orang tua', emoji: '🧑‍🤝‍🧑' },
+      { teks: 'Saya mau jalan-jalan', emoji: '🚶‍♂️' },
+      { teks: 'Saya senang di sini', emoji: '😃' },
+
+      // Salam & Sosial
+      { teks: 'Selamat pagi', emoji: '🌄' },
+      { teks: 'Selamat siang', emoji: '🌤' },
+      { teks: 'Selamat sore', emoji: '🌆' },
+      { teks: 'Selamat malam', emoji: '🌉' },
+      { teks: 'Nama kamu siapa?', emoji: '💁🏻‍♂️' },
+      { teks: 'Nama saya', emoji: '🙋🏻‍♀️' },
+      { teks: 'Maaf', emoji: '🙇🏻‍♂️' },
+      { teks: 'Terima kasih', emoji: '😇🙏🏻' },
+      { teks: 'Sama-sama', emoji: '🤗' },
+      { teks: 'Tolong', emoji: '🥺🙏🏻' },
+      { teks: 'Permisi', emoji: '🙏🏻' },
+      { teks: 'Saya mohon izin', emoji: '🙏🏻' },
+      { teks: 'Apa kabar?', emoji: '🤗' },
+      { teks: 'Kabar saya baik', emoji: '👍🏻' },
+      { teks: 'Saya sedang sakit', emoji: '🤒' },
+      { teks: 'Sampai jumpa', emoji: '👋🏻' },
+
+      // Emosi & Perasaan
+      { teks: 'Saya capek', emoji: '😪' },
+      { teks: 'Saya senang', emoji: '😃' },
+      { teks: 'Saya marah', emoji: '😡' },
+      { teks: 'Saya sedih', emoji: '😔' },
+      { teks: 'Saya takut', emoji: '😧' },
+      { teks: 'Saya bingung', emoji: '😕' },
+      { teks: 'Saya lelah', emoji: '😪' },
+      { teks: 'Saya pusing', emoji: '😵‍💫' },
+      { teks: 'Saya bahagia', emoji: '😄' },
+      { teks: 'Saya bangga', emoji: '🤩' },
+      { teks: 'Saya cinta', emoji: '🥰' },
+      { teks: 'Saya suka', emoji: '😍' },
+      { teks: 'Saya rindu', emoji: '🥺' },
+      { teks: 'Saya terharu', emoji: '🥹' },
+      { teks: 'Saya kaget', emoji: '😲' },
+      { teks: 'Saya ngantuk', emoji: '😴' },
+      { teks: 'Saya bosan', emoji: '😮‍💨' },
+      { teks: 'Saya malas', emoji: '🥱' },
+      { teks: 'Saya lapar', emoji: '🤤' },
+      { teks: 'Saya haus', emoji: '🥛' },
+      { teks: 'Saya sakit', emoji: '🤒' },
+      { teks: 'Saya mual', emoji: '🤢' },
+      { teks: 'Saya kepanasan', emoji: '🥵' },
+      { teks: 'Saya kedinginan', emoji: '🥶' },
+      { teks: 'Saya malu', emoji: '🫣' },
     ];
 
     // Load favorit dari localStorage (array teks)
