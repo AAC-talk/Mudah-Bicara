@@ -12,6 +12,7 @@
       margin: 0;
       padding: 20px;
       text-align: center;
+      position: relative;
     }
     h1 {
       color: #333;
@@ -27,6 +28,18 @@
       font-size: 1em;
       border-radius: 6px;
       border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .gear-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    .gear-btn {
+      font-size: 1.8em;
+      background: none;
+      border: none;
       cursor: pointer;
     }
     .container {
@@ -93,6 +106,10 @@
 </head>
 <body>
 
+  <div class="gear-container">
+    <button class="gear-btn" title="Pengaturan">⚙️</button>
+  </div>
+
   <h1>Di Sekolah</h1>
 
   <div class="voice-select">
@@ -118,7 +135,6 @@
 
     function loadItems() {
       const saved = JSON.parse(localStorage.getItem(key) || '[]');
-      // Gabung defaultItems dengan saved, tapi saved bisa override default kalau ada teks sama
       const combined = [...defaultItems];
       saved.forEach(s => {
         const idx = combined.findIndex(d => d.teks === s.teks);
@@ -137,10 +153,8 @@
       items: loadItems()
     };
 
-    // Favorit disimpan hanya teksnya
     let favoritList = JSON.parse(localStorage.getItem('favoritList') || '[]');
 
-    // Fungsi toggle favorit: tambah / hapus di localStorage favoritList
     function toggleFavorit(teks) {
       const idx = favoritList.indexOf(teks);
       if (idx !== -1) favoritList.splice(idx, 1);
@@ -149,13 +163,11 @@
       renderGridKategori();
     }
 
-    // Fungsi bicara dengan responsiveVoice
     function bicara(teks) {
       const voice = document.getElementById('voiceSelect').value;
       responsiveVoice.speak(teks, voice);
     }
 
-    // Fungsi latih bicara dengan speech recognition
     function latih(teksTarget, id) {
       if (!('webkitSpeechRecognition' in window)) {
         alert("Browser tidak mendukung fitur latihan bicara.");
@@ -192,7 +204,6 @@
       recognition.start();
     }
 
-    // Fungsi kemiripan string (Levenshtein)
     function kemiripan(a, b) {
       const jarak = levenshtein(a, b);
       return 1 - jarak / Math.max(a.length, b.length);
@@ -215,7 +226,6 @@
       return dp[b.length][a.length];
     }
 
-    // Render grid kategori
     function renderGridKategori() {
       const container = document.getElementById('gridKategori');
       container.innerHTML = '';
