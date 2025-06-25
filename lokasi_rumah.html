@@ -75,7 +75,7 @@
       margin: 0 auto 40px;
     }
     .item {
-      padding: 8px 10px 18px 10px;
+      padding: 8px 10px 36px 10px; /* tambah bawah buat space feedback */
       box-shadow: 2px 2px 6px #00000033;
       border-radius: 12px;
       cursor: pointer;
@@ -101,11 +101,16 @@
       justify-content: center;
       gap: 10px;
       margin-top: 5px;
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      right: 10px;
+      z-index: 5;
     }
     .controls button {
       background: none;
       border: none;
-      font-size: 1.2em;
+      font-size: 1.5em;
       cursor: pointer;
       user-select: none;
     }
@@ -115,6 +120,19 @@
     .fav.active {
       color: gold;
       text-shadow: 0 0 3px gold;
+    }
+    .feedback {
+      position: absolute;
+      bottom: 4px;
+      left: 10px;
+      right: 10px;
+      font-weight: bold;
+      font-size: 0.9em;
+      min-height: 18px;
+      color: #0a3d62;
+      text-align: center;
+      user-select: none;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -158,10 +176,9 @@
       { teks: 'Saya mau nonton tv', emoji: '📺' }
     ];
 
-    // Load items from localStorage, if any
+    // Load items dari localStorage
     function loadItems() {
       const saved = JSON.parse(localStorage.getItem(key) || '[]');
-      // Gabungkan default + saved, tapi yang saved override jika ada teks sama
       const combined = [...defaultItems];
       saved.forEach(s => {
         const idx = combined.findIndex(d => d.teks === s.teks);
@@ -171,10 +188,8 @@
       return combined;
     }
 
-    // Save custom items ke localStorage
+    // Simpan items ke localStorage hanya yang custom (bukan default)
     function saveItems(items) {
-      // Simpan hanya item yang tidak ada di defaultItems (artinya custom)
-      // supaya defaultItems tetap default, dan hapus permanen bisa bekerja
       const customItems = items.filter(item => !defaultItems.some(d => d.teks === item.teks));
       localStorage.setItem(key, JSON.stringify(customItems));
     }
@@ -211,7 +226,7 @@
         saveItems(dataKategori.items);
         renderGridKategori();
 
-        // Juga hapus dari favorit jika ada
+        // Hapus juga dari favorit jika ada
         const favIndex = favoritList.indexOf(teks);
         if (favIndex !== -1) {
           favoritList.splice(favIndex, 1);
@@ -227,6 +242,66 @@
       responsiveVoice.speak(teks, voice);
     }
 
+    // Fungsi latih bicara dengan speech recognition
+    function latih(teksTarget, id) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Browser tidak mendukung fitur latihan bicara.");
+        return;
+      }
+      const soundClickMic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c9bdf8633e.mp3?filename=mouse-click-124467.mp3');
+      const soundRecordStart = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_d264174dae.mp3?filename=pop-94319.mp3');
+      const soundCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/02/23/audio_4b4e7647fa.mp3?filename=correct-2-46134.mp3');
+      const soundWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_94a5831e04.mp3?filename=error-126627.mp3');
+
+      soundClickMic.play();
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => soundRecordStart.play();
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript.toLowerCase();
+        const skor = kemiripan(hasil, teksTarget.toLowerCase());
+        const feedback = document.getElementById("feedback-" + id);
+        if (skor >= 0.8) {
+          feedback.innerText = "✅ Bagus!";
+          feedback.style.color = "green";
+          soundCorrect.play();
+        } else {
+          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
+          feedback.style.color = "red";
+          soundWrong.play();
+        }
+      };
+
+      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
+      recognition.start();
+    }
+
+    // Fungsi hitung kemiripan Levenshtein
+    function kemiripan(a, b) {
+      const jarak = levenshtein(a, b);
+      return 1 - jarak / Math.max(a.length, b.length);
+    }
+
+    function levenshtein(a, b) {
+      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
+      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(
+            dp[i - 1][j] + 1,
+            dp[i][j - 1] + 1,
+            dp[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return dp[b.length][a.length];
+    }
+
     function toggleFavorit(teks) {
       const index = favoritList.indexOf(teks);
       if (index !== -1) favoritList.splice(index, 1);
@@ -240,6 +315,7 @@
       container.innerHTML = '';
       dataKategori.items.forEach(item => {
         const isFavorit = favoritList.includes(item.teks);
+        const idTeks = item.teks.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
@@ -247,7 +323,9 @@
           <p>${item.teks}</p>
           <div class="controls">
             <button class="fav ${isFavorit ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">${isFavorit ? '⭐' : '☆'}</button>
+            <button class="mic" title="Latih bicara" onclick="event.stopPropagation(); latih('${item.teks}', '${idTeks}')">🎤</button>
           </div>
+          <p class="feedback" id="feedback-${idTeks}"></p>
         `;
         div.onclick = () => bicara(item.teks);
         container.appendChild(div);
@@ -255,7 +333,7 @@
     }
 
     window.onload = () => renderGridKategori();
-
   </script>
+
 </body>
 </html>
