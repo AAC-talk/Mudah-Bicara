@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kategori: Di Rumah</title>
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
@@ -14,23 +14,114 @@
       text-align: center;
     }
     h1 { color: #333; }
-    .gear-container { position: absolute; top: 20px; right: 20px; }
-    .gear-btn { font-size: 1.5em; background: none; border: none; cursor: pointer; }
-    .pengaturan { display: none; flex-direction: column; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 5px; position: absolute; top: 30px; right: 0; z-index: 99; }
-    .pengaturan.show { display: flex; }
-    .pengaturan button { background-color: #3498db; color: white; border: none; padding: 6px 10px; margin: 4px; border-radius: 6px; cursor: pointer; }
-    .container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; margin: 0 auto 40px; }
-    .item { padding: 10px 10px 40px 10px; background-color: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; box-shadow: 2px 2px 6px #00000033; cursor: pointer; position: relative; }
-    .emoji { font-size: 2.5em; }
-    .item p { margin: 5px 0; font-weight: bold; }
-    .controls { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 10px; }
-    .fav { color: gray; }
-    .fav.active { color: gold; text-shadow: 0 0 3px gold; }
-    .feedback { font-size: 0.9em; font-weight: bold; color: #0a3d62; margin-top: 4px; min-height: 18px; }
+    .gear-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 99;
+    }
+    .gear-btn {
+      font-size: 1.5em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .pengaturan {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 5px;
+      z-index: 100;
+    }
+    .pengaturan.show {
+      display: flex;
+    }
+    .pengaturan button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin: 4px 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .voice-select {
+      margin: 15px auto 20px;
+      max-width: 200px;
+      text-align: left;
+    }
+    .voice-select label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    .voice-select select {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    .item {
+      padding: 8px 10px 18px 10px;
+      box-shadow: 2px 2px 6px #00000033;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+    .item:hover {
+      transform: scale(1.03);
+    }
+    .emoji {
+      font-size: 2.5em;
+    }
+    .item p {
+      margin: 5px 0;
+      font-size: 1em;
+      font-weight: bold;
+      color: #1f2937;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .controls button {
+      background: none;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .fav {
+      color: gray;
+    }
+    .fav.active {
+      color: gold;
+      text-shadow: 0 0 3px gold;
+    }
   </style>
 </head>
 <body>
+
   <h1>Kategori: Di Rumah</h1>
+
   <div class="gear-container">
     <button class="gear-btn" onclick="togglePengaturan()">⚙️</button>
     <div id="menuPengaturan" class="pengaturan">
@@ -38,7 +129,17 @@
       <button onclick="hapusKosakata()">🗑️ Hapus</button>
     </div>
   </div>
+
+  <div class="voice-select">
+    <label for="voiceSelect">Pilih Suara:</label>
+    <select id="voiceSelect">
+      <option value="Indonesian Female" selected>Perempuan</option>
+      <option value="Indonesian Male">Laki-laki</option>
+    </select>
+  </div>
+
   <div class="container" id="gridKategori"></div>
+
   <script>
     const key = 'kosakata_lokasi_rumah';
     const defaultItems = [
@@ -57,13 +158,25 @@
       { teks: 'Saya mau nonton tv', emoji: '📺' }
     ];
 
+    // Load items from localStorage, if any
     function loadItems() {
       const saved = JSON.parse(localStorage.getItem(key) || '[]');
-      return [...defaultItems.filter(d => !saved.some(s => s.teks === d.teks)), ...saved];
+      // Gabungkan default + saved, tapi yang saved override jika ada teks sama
+      const combined = [...defaultItems];
+      saved.forEach(s => {
+        const idx = combined.findIndex(d => d.teks === s.teks);
+        if (idx >= 0) combined[idx] = s;
+        else combined.push(s);
+      });
+      return combined;
     }
 
+    // Save custom items ke localStorage
     function saveItems(items) {
-      localStorage.setItem(key, JSON.stringify(items));
+      // Simpan hanya item yang tidak ada di defaultItems (artinya custom)
+      // supaya defaultItems tetap default, dan hapus permanen bisa bekerja
+      const customItems = items.filter(item => !defaultItems.some(d => d.teks === item.teks));
+      localStorage.setItem(key, JSON.stringify(customItems));
     }
 
     let dataKategori = {
@@ -81,12 +194,11 @@
       const teks = prompt("Masukkan teks:");
       const emoji = prompt("Masukkan emoji (contoh: 🍕, 🎮, 🧃):");
       if (!teks || !emoji) return alert("Teks dan emoji wajib diisi!");
-      const newItem = { teks: teks.trim(), emoji: emoji.trim() };
-      if (dataKategori.items.some(item => item.teks === newItem.teks)) {
+      if (dataKategori.items.some(item => item.teks === teks)) {
         alert("Teks ini sudah ada.");
         return;
       }
-      dataKategori.items.push(newItem);
+      dataKategori.items.push({ teks: teks.trim(), emoji: emoji.trim() });
       saveItems(dataKategori.items);
       renderGridKategori();
     }
@@ -98,13 +210,21 @@
         dataKategori.items.splice(index, 1);
         saveItems(dataKategori.items);
         renderGridKategori();
+
+        // Juga hapus dari favorit jika ada
+        const favIndex = favoritList.indexOf(teks);
+        if (favIndex !== -1) {
+          favoritList.splice(favIndex, 1);
+          localStorage.setItem('favoritList', JSON.stringify(favoritList));
+        }
       } else {
         alert("Teks tidak ditemukan!");
       }
     }
 
     function bicara(teks) {
-      responsiveVoice.speak(teks, "Indonesian Female");
+      const voice = document.getElementById('voiceSelect').value;
+      responsiveVoice.speak(teks, voice);
     }
 
     function toggleFavorit(teks) {
@@ -115,54 +235,11 @@
       renderGridKategori();
     }
 
-    function latih(teksTarget, id) {
-      const recognition = new webkitSpeechRecognition();
-      recognition.lang = 'id-ID';
-      recognition.interimResults = false;
-      recognition.onresult = (event) => {
-        const hasil = event.results[0][0].transcript.toLowerCase();
-        const skor = kemiripan(hasil, teksTarget.toLowerCase());
-        const feedback = document.getElementById("feedback-" + id);
-        if (skor >= 0.8) {
-          feedback.innerText = "✅ Bagus!";
-          feedback.style.color = "green";
-        } else {
-          feedback.innerText = "❌ Coba lagi. Kamu bilang: " + hasil;
-          feedback.style.color = "red";
-        }
-      };
-      recognition.onerror = () => alert("Gagal mengenali suara. Coba lagi ya!");
-      recognition.start();
-    }
-
-    function kemiripan(a, b) {
-      const jarak = levenshtein(a, b);
-      return 1 - jarak / Math.max(a.length, b.length);
-    }
-
-    function levenshtein(a, b) {
-      const dp = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(0));
-      for (let i = 0; i <= b.length; i++) dp[i][0] = i;
-      for (let j = 0; j <= a.length; j++) dp[0][j] = j;
-      for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-          const cost = b[i - 1] === a[j - 1] ? 0 : 1;
-          dp[i][j] = Math.min(
-            dp[i - 1][j] + 1,
-            dp[i][j - 1] + 1,
-            dp[i - 1][j - 1] + cost
-          );
-        }
-      }
-      return dp[b.length][a.length];
-    }
-
     function renderGridKategori() {
       const container = document.getElementById('gridKategori');
       container.innerHTML = '';
       dataKategori.items.forEach(item => {
         const isFavorit = favoritList.includes(item.teks);
-        const id = item.teks.replace(/\s+/g, '-');
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
@@ -170,16 +247,15 @@
           <p>${item.teks}</p>
           <div class="controls">
             <button class="fav ${isFavorit ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorit('${item.teks}')">${isFavorit ? '⭐' : '☆'}</button>
-            <button class="mic" onclick="event.stopPropagation(); latih('${item.teks}', '${id}')">🎤</button>
           </div>
-          <p class="feedback" id="feedback-${id}"></p>
         `;
         div.onclick = () => bicara(item.teks);
         container.appendChild(div);
       });
     }
 
-    window.onload = renderGridKategori;
+    window.onload = () => renderGridKategori();
+
   </script>
 </body>
 </html>
